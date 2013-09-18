@@ -29,20 +29,19 @@ void setup()
 
 void loop()
 {
-        int dist =0;
-        dist=getDistance();
-        if(dist < crashzone) {
+	int x=((encoderCount()) - 10);
+        if((getDistance()) < crashzone) {
                 crash=true;
         }
         if(crash == false) {
                 forward();
         }
         if(crash == true) {
-		do {
+			do {
                 	reverse();
-		}	
-		while((encoderCount()) >  0); 
-		stop();
+			}	
+			while((encoderCount()) >  x); 
+			crash=false;
         }	
         Serial.println(encoderCount());
 }
@@ -74,7 +73,7 @@ void reverse()
 int encoderCount()
 {
 	rawsensorData=analogRead(0);
-	if(rawsensorData < 600 && digitalRead(leftRmotor) == LOW && digitalRead(rightRmotor) == LOW) {
+	if(rawsensorData < 600 && (digitalRead(leftRmotor) == LOW || digitalRead(rightRmotor) == LOW)) {
             movingForward=true;
             sensorData1 = 1;
     }
