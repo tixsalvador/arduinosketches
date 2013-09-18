@@ -121,7 +121,7 @@ void speedDown()
 int encoderCount()
 {
 	rawsensorData=analogRead(0);
-	if(rawsensorData < 600 || digitalRead(leftRmotor) == LOW || digitalRead(rightRmotor) == LOW) {
+	if(rawsensorData < 600 && (digitalRead(leftRmotor) == LOW || digitalRead(rightRmotor) == LOW)) {
             movingForward=true;
             sensorData1 = 1;
     }
