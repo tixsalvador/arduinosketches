@@ -1,16 +1,16 @@
 /*
-091513	Configure Ultrasonic Sensor 
-091613	Configure bot movement relative to encoder pair
-091813	Added bot Uturn
-092313	Added bot Left and Right Turn
-092513	Remove reverse when crash is true; 
-092713 	Added wheretoGo() -Bot will know where to go left or right
+091513  Configure Ultrasonic Sensor
+091613  Configure bot movement relative to encoder pair
+091813  Added bot Uturn
+092313  Added bot Left and Right Turn
+092513  Remove reverse when crash is true;
+092713  Added wheretoGo() -Bot will know where to go left or right
 */
 
 #include <Servo.h>
 
 #define distancesensorPin 3
-#define leftFmotor 6 //M1 Speed Control 
+#define leftFmotor 6 //M1 Speed Control
 #define rightFmotor 5 //M2 Speed Control
 #define leftRmotor 8 //M1 Direction Control
 #define rightRmotor 7 //M2 Direction Control
@@ -25,10 +25,10 @@ int sensorData1= 0;
 int sensorData0 = 0;
 boolean movingForward=false;
 boolean crash=false;
-int crashzone=5; //Value in centimiters
+int crashzone=8; //Value in centimiters
 int uturnCount=25; //Default is 35 Value; change to 25 because of backstepcount
-int lturnCount=25;
-int rturnCount=25;
+int lturnCount=30;
+int rturnCount=30;
 int xservoCenter=1100;
 int xservoLeft=1650;
 int xservoRight=550;
@@ -39,24 +39,27 @@ Servo yservo;
 
 void setup()
 {
-	Serial.begin(9600);
-	pinMode(distancesensorPin, OUTPUT);
-	for(int i=5; i<=8; i++) {
-		pinMode(i, OUTPUT);
-	}
-	xservo.attach(xservoPin);
-	yservo.attach(yservoPin);
+        Serial.begin(9600);
+        pinMode(distancesensorPin, OUTPUT);
+        for(int i=5; i<=8; i++) {
+                pinMode(i, OUTPUT);
+        }
+        xservo.attach(xservoPin);
+        yservo.attach(yservoPin);
 }
 
 void loop()
 {
-	centerServos();
-	forward();		
+        centerServos();
+        forward();
+// Debugging
+Serial.println(getDistance());
+
 }
 
 void stop()
 {
-	digitalWrite(leftFmotor, LOW);
+        digitalWrite(leftFmotor, LOW);
     digitalWrite(rightFmotor, LOW);
     digitalWrite(leftRmotor, LOW);
     digitalWrite(rightRmotor, LOW);
@@ -64,33 +67,32 @@ void stop()
 
 void forward()
 {
-	if((getDistance()) < crashzone) {
+        if((getDistance()) < crashzone) {
                 crash=true;
         }
         if(crash == false) {
             analogWrite(leftFmotor, leftmotorSpeed);
-			analogWrite(rightFmotor, rightmotorSpeed);
-			digitalWrite(leftRmotor, LOW);
-			digitalWrite(rightRmotor, LOW);
+                        analogWrite(rightFmotor, rightmotorSpeed);
+                        digitalWrite(leftRmotor, LOW);
+                        digitalWrite(rightRmotor, LOW);
         }
         if(crash == true) {
-			reverse(8);
-			stop();
-			delay(2000);
-			wheretoGo();
-			crash=false;
-        }	
+                        stop();
+                        delay(1000);
+                        wheretoGo();
+                        crash=false;
+        }
         //Serial.println(encoderCount());
 }
-		
+
 void reverse(int backstepCount)
 {
     int backstep=((encoderCount()) - backstepCount);
     do {
-    	analogWrite(leftFmotor, leftmotorSpeed);
-    	analogWrite(rightFmotor, rightmotorSpeed);
-    	digitalWrite(leftRmotor, HIGH);
-    	digitalWrite(rightRmotor, HIGH);
+        analogWrite(leftFmotor, leftmotorSpeed);
+        analogWrite(rightFmotor, rightmotorSpeed);
+        digitalWrite(leftRmotor, HIGH);
+        digitalWrite(rightRmotor, HIGH);
     } while((encoderCount()) > backstep);
 }
 
@@ -98,59 +100,57 @@ void left()
 {
         int lturn=((encoderCount()) + lturnCount);
         do {
-        	analogWrite(leftFmotor, leftmotorSpeed);
-        	analogWrite(rightFmotor, rightmotorSpeed);
-        	digitalWrite(leftRmotor, HIGH);
-        	digitalWrite(rightRmotor, LOW);
+                analogWrite(leftFmotor, leftmotorSpeed);
+                analogWrite(rightFmotor, rightmotorSpeed);
+                digitalWrite(leftRmotor, HIGH);
+                digitalWrite(rightRmotor, LOW);
         }
         while((encoderCount()) < lturn);
 }
 
 void right()
 {
-		int rturn=((encoderCount()) + rturnCount);
-		do {
-			analogWrite(leftFmotor, leftmotorSpeed);
-    		analogWrite(rightFmotor, rightmotorSpeed);
-    		digitalWrite(leftRmotor, LOW);
-    		digitalWrite(rightRmotor, HIGH);
-		}
-		while((encoderCount()) < rturn);
+                int rturn=((encoderCount()) + rturnCount);
+                do {
+                        analogWrite(leftFmotor, leftmotorSpeed);
+                analogWrite(rightFmotor, rightmotorSpeed);
+                digitalWrite(leftRmotor, LOW);
+                digitalWrite(rightRmotor, HIGH);
+                }
+                while((encoderCount()) < rturn);
 }
 
 void centerServos()
 {
-	xservo.writeMicroseconds(xservoCenter);
-	yservo.writeMicroseconds(yservoCenter);
+        xservo.writeMicroseconds(xservoCenter);
+        yservo.writeMicroseconds(yservoCenter);
 }
 
 void wheretoGo()
 {
-	digitalWrite(distancesensorPin, LOW);
-	xservo.writeMicroseconds(xservoLeft);
-	delay(1000);
-	int leftdistanceValue=getDistance();
-	digitalWrite(distancesensorPin, LOW);
-	xservo.writeMicroseconds(xservoRight);
-	delay(1000);
-	int rightdistanceValue=getDistance();
-	digitalWrite(distancesensorPin, LOW);
-	centerServos();
-	if(leftdistanceValue > rightdistanceValue && leftdistanceValue > crashzone) {
-		left();
-	}
-	else if(rightdistanceValue > leftdistanceValue && rightdistanceValue > crashzone) {
-		right();
-	}
-	else {
-		reverse(10);
-	}
+        xservo.writeMicroseconds(xservoLeft);
+        delay(1000);
+        int leftdistanceValue=getDistance();
+        xservo.writeMicroseconds(xservoRight);
+        delay(1000);
+        int rightdistanceValue=getDistance();
+        delay(1000);
+        centerServos();
+        if(leftdistanceValue > rightdistanceValue && leftdistanceValue > crashzone) {
+                left();
+        }
+        else if(rightdistanceValue > leftdistanceValue && rightdistanceValue > crashzone) {
+                right();
+        }
+        else {
+                reverse(10);
+        }
 }
 
 int encoderCount()
 {
-	rawsensorData=analogRead(0);
-	if(rawsensorData < 600 && (digitalRead(leftRmotor) == LOW || digitalRead(rightRmotor) == LOW)) {
+        rawsensorData=analogRead(0);
+        if(rawsensorData < 600 && (digitalRead(leftRmotor) == LOW || digitalRead(rightRmotor) == LOW)) {
             movingForward=true;
             sensorData1 = 1;
     }
@@ -159,14 +159,14 @@ int encoderCount()
             sensorData1 = 1;
     }
     else {
-    		sensorData1 = 0;
+                sensorData1 = 0;
     }
-    
+
     if(sensorData1 != sensorData0 && movingForward == true) {
             count ++;
     }
     else if (sensorData1 != sensorData0 && movingForward == false) {
-      		count --;
+                count --;
     }
     sensorData0 = sensorData1;
     return count;
