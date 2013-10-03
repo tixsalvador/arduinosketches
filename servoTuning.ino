@@ -1,9 +1,9 @@
 /*
 servo.write X 0-right, 50 center, 100 left;
-servo.write Y 90 degrees of sensor
+servo.write Y 110 center, 170 down, 10 up
 
 servo.writeMicroseconds X 1100 center, 1650 left, 550 right
-servo.writeMicroseconds Y 1600 center, 2050 down, 1150 up
+servo.writeMicroseconds Y 1600 center, 2050 down, 800 up
 */
 
 #include <Servo.h>
