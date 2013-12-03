@@ -1,37 +1,46 @@
 #!/bin/sh
 
 CENTER=1500
+answer=y
 
-echo
-echo -n "Value of Left sensor : "
-read INFRALEFTVALUE
-echo -n "Value of Right sensor : "
-read INFRARIGHTVALUE
-echo -n "Value of Scale Factor : "
-read SCALEFACTOR
-echo -n "Value of Servo Multiplier: "
-read SERVOMULTIPLY
 
-SCALE=$(expr $INFRALEFTVALUE + $INFRARIGHTVALUE)
-SCALE=$(expr $SCALE \* $SCALEFACTOR)
-SCALE=$(expr $SCALE / 10)
+while [ $answer = y ]; do
 
-x=$(expr $INFRARIGHTVALUE - $INFRALEFTVALUE)
-x=$(expr $x \* $SERVOMULTIPLY)
-x=$(expr $x / $SCALE)
+        echo
+        echo -n "Value of Left sensor : "
+        read INFRALEFTVALUE
+        echo -n "Value of Right sensor : "
+        read INFRARIGHTVALUE
+        echo -n "Value of Scale Factor : "
+        read SCALEFACTOR
+        echo -n "Value of Servo Multiplier: "
+        read SERVOMULTIPLY
 
-SERVOMOVE=$(expr $CENTER + $x)
+        SCALE=$(expr $INFRALEFTVALUE + $INFRARIGHTVALUE)
+        SCALE=$(expr $SCALE \* $SCALEFACTOR)
+        SCALE=$(expr $SCALE / 10)
 
-SCALE2=$(expr $INFRALEFTVALUE + $INFRARIGHTVALUE)
-SCALE2=$(expr $SCALE2 / $SCALEFACTOR)
+        x=$(expr $INFRARIGHTVALUE - $INFRALEFTVALUE)
+        x=$(expr $x \* $SERVOMULTIPLY)
+        x=$(expr $x / $SCALE)
 
-y=$(expr $INFRARIGHTVALUE - $INFRALEFTVALUE)
-y=$(expr $y \* $SERVOMULTIPLY)
-y=$(expr $y / $SCALE2)
+        SERVOMOVE=$(expr $CENTER + $x)
 
-SERVOMOVE2=$(expr $CENTER + $y)
+        SCALE2=$(expr $INFRALEFTVALUE + $INFRARIGHTVALUE)
+        SCALE2=$(expr $SCALE2 / $SCALEFACTOR)
 
-echo
-echo  "Value of SERVO Movement using enhance method is : $SERVOMOVE"
-echo  "Value of SERVO Movement using original method is: $SERVOMOVE2"
-echo
+        y=$(expr $INFRARIGHTVALUE - $INFRALEFTVALUE)
+        y=$(expr $y \* $SERVOMULTIPLY)
+        y=$(expr $y / $SCALE2)
+
+        SERVOMOVE2=$(expr $CENTER + $y)
+
+        echo
+        echo  "Value of SERVO Movement using enhance method is : $SERVOMOVE"
+        echo  "Value of SERVO Movement using original method is: $SERVOMOVE2"
+        echo
+
+        echo -n "Compute another one? [y/n] : "
+        read answer
+
+done
