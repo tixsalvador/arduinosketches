@@ -3,16 +3,25 @@ Compoung IR Calibration
 */
 
 
-#define infraUp A2
-#define infraLeft A3
-#define infraDown A0
-#define infraRight A1
-#define infraLeds 11
+#define infraUp A5
+#define infraLeft A4
+#define infraDown A3
+#define infraRight A2
+#define infraLeds 10
+
+/*
+#define irledPin 10
+#define irupPin A5
+#define irleftPin A4
+#define irdownPin A3
+#define irrightPin A2
+*/
 
 int infraUpvalue;
 int infraLeftvalue;
 int infraDownvalue;
 int infraRightvalue;
+int irDistance;
 
 void setup()
 {
@@ -28,6 +37,12 @@ void infraRead()
         infraLeftvalue=analogRead(infraLeft);
         infraDownvalue=analogRead(infraDown);
         infraRightvalue=analogRead(infraRight);
+	digitalWrite(infraLeds, LOW);
+	delayMicroseconds(100);
+	infraUpvalue=infraUpvalue - analogRead(infraUp);
+	infraLeftvalue=infraLeftvalue - analogRead(infraLeft);
+	infraDownvalue=infraDownvalue - analogRead(infraDown);
+	infraRightvalue=infraRightvalue - analogRead(infraRight);
 }
 
 
