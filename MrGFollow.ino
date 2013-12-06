@@ -1,6 +1,6 @@
 #include <Servo.h>
 
-#define panservoPin 1
+#define panservoPin 7
 #define tiltservoPin 2
 #define leftmotorPin 3
 #define rightmotorPin 4
@@ -11,8 +11,8 @@
 #define irdownPin A3
 #define irrightPin A2
 
-int panservoCenter=1500;
-int tiltservoCenter=1500;
+int panservoCenter=90;
+int tiltservoCenter=90;
 int leftmotorStop=1490;
 int rightmotorStop=1500;
 
@@ -27,9 +27,15 @@ int distanceMax=180;
 int leftmotorSpeed=leftmotorStop;
 int rightmotorSpeed=rightmotorStop;
 
-int pan;
-int tilt;
+int pan=panservoCenter;
+int panScale;
+byte panscaleFactor=3;
+byte servoMultiplier=10;
+int x;
+int panLeftRight;
 
+int tilt=tiltservoCenter;
+ 
 Servo panServo;
 Servo tiltServo;
 Servo leftMotor;
@@ -39,9 +45,9 @@ void setup()
 {
 	Serial.begin(9600);
 	panServo.attach(panservoPin);
-	panServo.writeMicroseconds(panservoCenter);
+	panServo.write(panservoCenter);
 	tiltServo.attach(tiltservoPin);
-	tiltServo.writeMicroseconds(tiltservoCenter);
+	tiltServo.write(tiltservoCenter);
 	leftMotor.attach(leftmotorPin);
 	leftMotor.writeMicroseconds(leftmotorStop);
 	rightMotor.attach(rightmotorPin);
@@ -50,17 +56,10 @@ void setup()
 }
 
 void loop()
-{
+{ 
+	panServo.write(pan);	
 	infraDistance();
-	Serial.print(irUpvalue);	
-	Serial.print(" ");
-	Serial.print(irDownvalue);
-	Serial.print(" ");
-	Serial.print(irLeftvalue);	
-	Serial.print(" ");
-	Serial.print(irRightvalue);
-	Serial.print(" ");
-	Serial.println(irDistance);
+	infraFollow();
 }
 
 void stop()
@@ -105,7 +104,15 @@ void infraFollow()
 		}
 	}
 	else
-	{	
-		
+	{
+		panScale=(irLeftvalue + irRightvalue) * panscaleFactor / 10;
+		if(irLeftvalue > irRightvalue) {
+			x=(irLeftvalue - irRightvalue) * servoMultiplier / panScale;
+			pan=pan - x;
+		}
+		if(irLeftvalue < irRightvalue) {
+			x=(irRightvalue - irLeftvalue) * servoMultiplier / panScale;
+			pan=pan + x;
+		}
 	}
 }
