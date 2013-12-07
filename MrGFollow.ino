@@ -14,7 +14,9 @@
 int panservoCenter=90;
 int xservoMin=0;
 int xservoMax=180;
-int tiltservoCenter=90;
+int tiltservoCenter=30;
+int yservoMin=0;
+int yservoMax=160;
 int leftmotorStop=1490;
 int rightmotorStop=1500;
 
@@ -32,11 +34,14 @@ int rightmotorSpeed=rightmotorStop;
 int pan=panservoCenter;
 int panScale;
 byte panscaleFactor=5;
-byte servoMultiplier=10;
+byte panservoMultiplier=10;
 int x;
-int panLeftRight;
 
 int tilt=tiltservoCenter;
+int tiltScale;
+byte tiltscaleFactor=5;
+byte tiltservoMultiplier=10;
+int y;
  
 Servo panServo;
 Servo tiltServo;
@@ -60,13 +65,14 @@ void setup()
 void loop()
 { 
 	panServo.write(pan);	
+	tiltServo.write(tilt);
 	infraDistance();
 	infraFollow();
-	Serial.print(irLeftvalue);
+	Serial.print(irUpvalue);
 	Serial.print(" ");
-	Serial.print(irRightvalue);
+	Serial.print(irDownvalue);
 	Serial.print(" ");
-	Serial.println(pan);
+	Serial.println(tilt);
 }
 
 void stop()
@@ -113,20 +119,34 @@ void infraFollow()
 	else
 	{
 		panScale=(irLeftvalue + irRightvalue) * panscaleFactor / 10;
+		tiltScale=(irUpvalue + irDownvalue) * tiltscaleFactor / 10;
 		if(irLeftvalue < irRightvalue) {
-			x=(irLeftvalue - irRightvalue) * servoMultiplier / panScale;
+			x=(irLeftvalue - irRightvalue) * panservoMultiplier / panScale;
 			pan=pan - x;
 		}
 		if(irLeftvalue > irRightvalue) {
-			x=(irRightvalue - irLeftvalue) * servoMultiplier / panScale;
+			x=(irRightvalue - irLeftvalue) * panservoMultiplier / panScale;
 			pan=pan +x;
 		} 
+		if(irUpvalue > irDownvalue) {
+			y=(irDownvalue - irUpvalue) * tiltservoMultiplier / tiltScale;
+			tilt= tilt - y;
+		}
+		if(irUpvalue < irDownvalue) {
+			y=(irUpvalue - irDownvalue) * tiltservoMultiplier / tiltScale;
+			tilt= tilt + y;
+		}
 	}
-if(pan < xservoMin) {
-	pan=xservoMin;
-}
-if(pan > xservoMax) {
-	pan=xservoMax;
-}
-
+	if(pan < xservoMin) {
+		pan=xservoMin;
+	}
+	if(pan > xservoMax) {
+		pan=xservoMax;
+	}
+	if(tilt < yservoMin) {
+		tilt=yservoMin;
+	}
+	if(tilt > yservoMax) {
+		tilt=yservoMax;
+	}
 }
