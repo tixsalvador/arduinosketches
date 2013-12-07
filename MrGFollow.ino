@@ -12,6 +12,8 @@
 #define irrightPin A2
 
 int panservoCenter=90;
+int xservoMin=0;
+int xservoMax=180;
 int tiltservoCenter=90;
 int leftmotorStop=1490;
 int rightmotorStop=1500;
@@ -22,14 +24,14 @@ int irDownvalue;
 int irRightvalue;
 int irDistance;
 
-int distanceMax=180;
+int distanceMax=250;
 
 int leftmotorSpeed=leftmotorStop;
 int rightmotorSpeed=rightmotorStop;
 
 int pan=panservoCenter;
 int panScale;
-byte panscaleFactor=3;
+byte panscaleFactor=5;
 byte servoMultiplier=10;
 int x;
 int panLeftRight;
@@ -60,6 +62,11 @@ void loop()
 	panServo.write(pan);	
 	infraDistance();
 	infraFollow();
+	Serial.print(irLeftvalue);
+	Serial.print(" ");
+	Serial.print(irRightvalue);
+	Serial.print(" ");
+	Serial.println(pan);
 }
 
 void stop()
@@ -106,13 +113,20 @@ void infraFollow()
 	else
 	{
 		panScale=(irLeftvalue + irRightvalue) * panscaleFactor / 10;
-		if(irLeftvalue > irRightvalue) {
+		if(irLeftvalue < irRightvalue) {
 			x=(irLeftvalue - irRightvalue) * servoMultiplier / panScale;
 			pan=pan - x;
 		}
-		if(irLeftvalue < irRightvalue) {
+		if(irLeftvalue > irRightvalue) {
 			x=(irRightvalue - irLeftvalue) * servoMultiplier / panScale;
-			pan=pan + x;
-		}
+			pan=pan +x;
+		} 
 	}
+if(pan < xservoMin) {
+	pan=xservoMin;
+}
+if(pan > xservoMax) {
+	pan=xservoMax;
+}
+
 }
