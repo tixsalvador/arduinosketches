@@ -43,6 +43,11 @@ byte tiltscaleFactor=5;
 byte tiltservoMultiplier=10;
 int y;
  
+int move;
+int leftmotorMove=leftmotorStop;
+int rightmotorMove=rightmotorStop;
+
+
 Servo panServo;
 Servo tiltServo;
 Servo leftMotor;
@@ -64,10 +69,13 @@ void setup()
 
 void loop()
 { 
+	leftMotor.write(leftmotorMove);
+	rightMotor.write(rightmotorMove);
 	panServo.write(pan);	
 	tiltServo.write(tilt);
 	infraDistance();
 	infraFollow();
+	Serial.println(leftmotorMove);
 }
 
 void stop()
@@ -143,5 +151,10 @@ void infraFollow()
 	}
 	if(tilt > yservoMax) {
 		tilt=yservoMax;
+	}
+	move=xservoMax - pan;
+	if(move < 20) {
+		leftmotorMove=leftmotorStop - 36 + pan;
+		rightmotorMove=rightmotorStop -36 + pan;
 	}
 }
