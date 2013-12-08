@@ -153,7 +153,7 @@ void infraFollow()
 		tilt=yservoMax;
 	}
 	move=xservoMax - pan;
-	if(move < 20) {
+	if(move < 10) {
 		leftmotorMove=leftmotorStop - 36 - pan;
 		rightmotorMove=rightmotorStop -36 - pan;
 	}
