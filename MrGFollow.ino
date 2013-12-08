@@ -17,8 +17,8 @@ int xservoMax=180;
 int tiltservoCenter=30;
 int yservoMin=0;
 int yservoMax=160;
-int leftmotorStop=1490;
-int rightmotorStop=1500;
+int leftmotorStop=90;
+int rightmotorStop=91;
 
 int irUpvalue;
 int irLeftvalue;
@@ -26,7 +26,7 @@ int irDownvalue;
 int irRightvalue;
 int irDistance;
 
-int distanceMax=250;
+int distanceMax=300;
 
 int leftmotorSpeed=leftmotorStop;
 int rightmotorSpeed=rightmotorStop;
@@ -56,9 +56,9 @@ void setup()
 	tiltServo.attach(tiltservoPin);
 	tiltServo.write(tiltservoCenter);
 	leftMotor.attach(leftmotorPin);
-	leftMotor.writeMicroseconds(leftmotorStop);
+	leftMotor.write(leftmotorStop);
 	rightMotor.attach(rightmotorPin);
-	rightMotor.writeMicroseconds(rightmotorStop);
+	rightMotor.write(rightmotorStop);
 	pinMode(irledPin, OUTPUT);
 }
 
