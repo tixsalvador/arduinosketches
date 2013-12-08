@@ -154,7 +154,12 @@ void infraFollow()
 	}
 	move=xservoMax - pan;
 	if(move < 20) {
-		leftmotorMove=leftmotorStop - 36 + pan;
-		rightmotorMove=rightmotorStop -36 + pan;
+		leftmotorMove=leftmotorStop - 36 - pan;
+		rightmotorMove=rightmotorStop -36 - pan;
+	}
+	move=xservoMin + pan;
+	if(move < 10) {
+		leftmotorMove=leftmotorStop + 36 + pan;
+		rightmotorMove=rightmotorStop + 36 + pan;
 	}
 }
