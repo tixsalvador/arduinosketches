@@ -18,7 +18,7 @@ int tiltservoCenter=30;
 int yservoMin=0;
 int yservoMax=160;
 int leftmotorStop=90;
-int rightmotorStop=91;
+int rightmotorStop=92;
 
 int irUpvalue;
 int irLeftvalue;
@@ -68,11 +68,6 @@ void loop()
 	tiltServo.write(tilt);
 	infraDistance();
 	infraFollow();
-	Serial.print(irUpvalue);
-	Serial.print(" ");
-	Serial.print(irDownvalue);
-	Serial.print(" ");
-	Serial.println(tilt);
 }
 
 void stop()
