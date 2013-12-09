@@ -26,11 +26,11 @@ int irDownvalue;
 int irRightvalue;
 int irDistance;
 
-int distanceMax=300;
+int distanceMax=250;
+int bestDistance=600;
 
 int leftmotorSpeed=leftmotorStop;
 int rightmotorSpeed=rightmotorStop;
-
 int pan=panservoCenter;
 int panScale;
 byte panscaleFactor=5;
@@ -80,8 +80,8 @@ void loop()
 
 void stop()
 {
-	leftMotor.writeMicroseconds(leftmotorStop);
-	rightMotor.writeMicroseconds(rightmotorStop);
+	leftMotor.write(leftmotorStop);
+	rightMotor.write(rightmotorStop);
 }
 
 void infraDistance()
@@ -152,14 +152,28 @@ void infraFollow()
 	if(tilt > yservoMax) {
 		tilt=yservoMax;
 	}
+/*	
 	move=xservoMax - pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop - 36 - pan;
-		rightmotorMove=rightmotorStop -36 - pan;
+		leftmotorMove=leftmotorStop - 20 - move;
+		rightmotorMove=rightmotorStop - 20 - move;
 	}
 	move=xservoMin + pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop + 36 + pan;
-		rightmotorMove=rightmotorStop + 36 + pan;
+		leftmotorMove=leftmotorStop  + 20 + move;
+		rightmotorMove=rightmotorStop + 20 + move;
+	} */
+
+	if(irDistance > 500) {
+		leftMotor.write(180);
+		rightMotor.write(0);
+	}
+	else if (irDistance < 300 && irDistance > 200) {
+		leftMotor.write(0);
+		rightMotor.write(180);
+	}
+	else {
+		leftMotor.write(leftmotorStop);
+		rightMotor.write(rightmotorStop);
 	}
 }
