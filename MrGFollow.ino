@@ -17,8 +17,8 @@ int xservoMax=180;
 int tiltservoCenter=30;
 int yservoMin=0;
 int yservoMax=160;
-int leftmotorStop=90;
-int rightmotorStop=92;
+int leftmotorStop=94;
+int rightmotorStop=96;
 
 int irUpvalue;
 int irLeftvalue;
@@ -152,18 +152,18 @@ void infraFollow()
 	if(tilt > yservoMax) {
 		tilt=yservoMax;
 	}
-/*	
+	
 	move=xservoMax - pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop - 20 - move;
-		rightmotorMove=rightmotorStop - 20 - move;
+		leftmotorMove=leftmotorStop - 54 - move;
+		rightmotorMove=rightmotorStop - 54 - move;
 	}
 	move=xservoMin + pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop  + 20 + move;
-		rightmotorMove=rightmotorStop + 20 + move;
-	} */
-
+		leftmotorMove=leftmotorStop  + 54 + move;
+		rightmotorMove=rightmotorStop + 54 + move;
+	} 
+/*
 	if(irDistance > 500) {
 		leftMotor.write(180);
 		rightMotor.write(0);
@@ -175,5 +175,5 @@ void infraFollow()
 	else {
 		leftMotor.write(leftmotorStop);
 		rightMotor.write(rightmotorStop);
-	}
+	} */
 }
