@@ -75,7 +75,6 @@ void loop()
 	tiltServo.write(tilt);
 	infraDistance();
 	infraFollow();
-	Serial.println(leftmotorMove);
 }
 
 void stop()
@@ -163,7 +162,8 @@ void infraFollow()
 		leftmotorMove=leftmotorStop  + 54 + move;
 		rightmotorMove=rightmotorStop + 54 + move;
 	} 
-/*
+	
+	/*
 	if(irDistance > 500) {
 		leftMotor.write(180);
 		rightMotor.write(0);
@@ -175,5 +175,6 @@ void infraFollow()
 	else {
 		leftMotor.write(leftmotorStop);
 		rightMotor.write(rightmotorStop);
-	} */
+	}
+	 */
 }
