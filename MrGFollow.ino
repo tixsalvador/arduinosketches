@@ -33,19 +33,20 @@ int leftmotorSpeed=leftmotorStop;
 int rightmotorSpeed=rightmotorStop;
 int pan=panservoCenter;
 int panScale;
-byte panscaleFactor=5;
+byte panscaleFactor=3;
 byte panservoMultiplier=10;
 int x;
 
 int tilt=tiltservoCenter;
 int tiltScale;
-byte tiltscaleFactor=5;
+byte tiltscaleFactor=3;
 byte tiltservoMultiplier=10;
 int y;
  
 int move;
 int leftmotorMove=leftmotorStop;
 int rightmotorMove=rightmotorStop;
+int motorSpeed=20;
 
 
 Servo panServo;
@@ -77,10 +78,48 @@ void loop()
 	infraFollow();
 }
 
+void reAttach()
+{
+	if(!panServo.attached()) 
+		panServo.attach(panservoPin);
+	
+	if(!tiltServo.attached()) 
+		tiltServo.attach(tiltservoPin);
+}
+	
+	
 void stop()
 {
-	leftMotor.write(leftmotorStop);
-	rightMotor.write(rightmotorStop);
+	panServo.detach();
+	tiltServo.detach();
+}
+
+void forward()
+{
+	reAttach();
+	leftmotorMove=leftmotorStop - 30;
+	rightmotorMove=rightmotorStop + 30;
+}
+
+void backward()
+{
+	reAttach();
+        leftmotorMove=leftmotorStop + 30;
+        rightmotorMove=rightmotorStop - 30;
+}
+
+void left()
+{
+	reAttach();
+	leftmotorMove=leftmotorStop - motorSpeed;
+        rightmotorMove=rightmotorStop - motorSpeed;
+}
+
+void right()
+{
+        reAttach();
+        leftmotorMove=leftmotorStop + motorSpeed;
+        rightmotorMove=rightmotorStop + motorSpeed;
 }
 
 void infraDistance()
@@ -152,18 +191,35 @@ void infraFollow()
 		tilt=yservoMax;
 	}
 	
+	/*
 	move=xservoMax - pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop - 54 - move;
-		rightmotorMove=rightmotorStop - 54 - move;
+		leftmotorMove=leftmotorStop - motorSpeed; 
+		rightmotorMove=rightmotorStop - motorSpeed;
 	}
 	move=xservoMin + pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop  + 54 + move;
-		rightmotorMove=rightmotorStop + 54 + move;
+		leftmotorMove=leftmotorStop  + motorSpeed;
+		rightmotorMove=rightmotorStop + motorSpeed;
 	} 
+
+	if(move >10) {
+		stop();
+	}
+
+	move=irDistance - bestDistance;
+	move=abs(move);
+	if(move > 10){
+		if(irDistance > bestDistance) {
+			leftmotorMove=leftmotorStop + 30;
+			rightmotorMove=rightmotorStop - 30;
+		}
+		else {
+			leftmotorMove=leftmotorStop - 30;
+			rightmotorMove=rightmotorStop + 30;
+		}
+	}
 	
-	/*
 	if(irDistance > 500) {
 		leftMotor.write(180);
 		rightMotor.write(0);
