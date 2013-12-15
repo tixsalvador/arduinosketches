@@ -191,22 +191,17 @@ void infraFollow()
 		tilt=yservoMax;
 	}
 	
-	/*
+	
 	move=xservoMax - pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop - motorSpeed; 
-		rightmotorMove=rightmotorStop - motorSpeed;
+		left();
 	}
 	move=xservoMin + pan;
 	if(move < 10) {
-		leftmotorMove=leftmotorStop  + motorSpeed;
-		rightmotorMove=rightmotorStop + motorSpeed;
+		right();
 	} 
 
-	if(move >10) {
-		stop();
-	}
-
+	/*
 	move=irDistance - bestDistance;
 	move=abs(move);
 	if(move > 10){
