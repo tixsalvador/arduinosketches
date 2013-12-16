@@ -76,22 +76,23 @@ void loop()
 	tiltServo.write(tilt);
 	infraDistance();
 	infraFollow();
+	Serial.println(pan);
 }
 
 void reAttach()
 {
-	if(!panServo.attached()) 
-		panServo.attach(panservoPin);
-	
-	if(!tiltServo.attached()) 
-		tiltServo.attach(tiltservoPin);
+	if(!leftMotor.attached()) 
+		leftMotor.attach(leftmotorPin);	
+		
+	if(!rightMotor.attached()) 
+		rightMotor.attach(rightmotorPin);
 }
 	
 	
 void stop()
 {
-	panServo.detach();
-	tiltServo.detach();
+	leftMotor.detach();
+	rightMotor.detach();
 }
 
 void forward()
@@ -111,15 +112,15 @@ void backward()
 void left()
 {
 	reAttach();
-	leftmotorMove=leftmotorStop - motorSpeed;
-        rightmotorMove=rightmotorStop - motorSpeed;
+	leftmotorMove=leftmotorStop + motorSpeed;
+        rightmotorMove=rightmotorStop + motorSpeed;
 }
 
 void right()
 {
         reAttach();
-        leftmotorMove=leftmotorStop + motorSpeed;
-        rightmotorMove=rightmotorStop + motorSpeed;
+        leftmotorMove=leftmotorStop - motorSpeed;
+        rightmotorMove=rightmotorStop - motorSpeed;
 }
 
 void infraDistance()
@@ -191,41 +192,14 @@ void infraFollow()
 		tilt=yservoMax;
 	}
 	
-	
-	move=xservoMax - pan;
-	if(move < 10) {
+	if(pan == 180) {
+		right();
+	}
+	else if(pan == 0) {
 		left();
 	}
-	move=xservoMin + pan;
-	if(move < 10) {
-		right();
-	} 
-
-	/*
-	move=irDistance - bestDistance;
-	move=abs(move);
-	if(move > 10){
-		if(irDistance > bestDistance) {
-			leftmotorMove=leftmotorStop + 30;
-			rightmotorMove=rightmotorStop - 30;
-		}
-		else {
-			leftmotorMove=leftmotorStop - 30;
-			rightmotorMove=rightmotorStop + 30;
-		}
-	}
-	
-	if(irDistance > 500) {
-		leftMotor.write(180);
-		rightMotor.write(0);
-	}
-	else if (irDistance < 300 && irDistance > 200) {
-		leftMotor.write(0);
-		rightMotor.write(180);
-	}
 	else {
-		leftMotor.write(leftmotorStop);
-		rightMotor.write(rightmotorStop);
+		stop();
 	}
-	 */
+		
 }
