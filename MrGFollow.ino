@@ -76,7 +76,7 @@ void loop()
 	tiltServo.write(tilt);
 	infraDistance();
 	infraFollow();
-	Serial.println(pan);
+	//Serial.println(irDistance);
 }
 
 void reAttach()
@@ -179,6 +179,7 @@ void infraFollow()
 			tilt= tilt + y;
 		}
 	}
+
 	if(pan < xservoMin) {
 		pan=xservoMin;
 	}
@@ -192,14 +193,18 @@ void infraFollow()
 		tilt=yservoMax;
 	}
 	
-	if(pan == 180) {
+	if(pan == xservoMax) {
 		right();
 	}
-	else if(pan == 0) {
+	else if(pan == xservoMin) {
 		left();
 	}
 	else {
 		stop();
 	}
+
+	if(irDistance > bestDistance && (!pan == xservoMax || !pan == xservoMin)) {
+		backward();
+	} 
 		
 }
