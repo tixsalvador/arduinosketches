@@ -202,9 +202,12 @@ void infraFollow()
 	else {
 		stop();
 	}
+	
+	if(irDistance < bestDistance && irDistance > 300 && pan != xservoMin && pan != xservoMax) {
+		forward();
+	}
 
-	if(irDistance > bestDistance && (!pan == xservoMax || !pan == xservoMin)) {
+	if(irDistance > bestDistance && pan != xservoMin && pan != xservoMax) {
 		backward();
 	} 
-		
 }
