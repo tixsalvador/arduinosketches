@@ -12,6 +12,9 @@ Servo rightServo;
 int irSen1;
 int irSen2;
 
+byte lightChase;
+long time;
+
 void setup()
 {
 	Serial.begin(9600);
@@ -33,6 +36,9 @@ void irSen()
 	digitalWrite(led1, LOW);
 	digitalWrite(led2, LOW);
 	delayMicroseconds(100);
+
+	digitalWrite(led1,(lightChase == 1 || irSen1 == 0));
+	digitalWrite(led2,(lightChase == 2 || irSen2 == 0));
 }
 
 void stop()
@@ -57,6 +63,12 @@ void forward()
 
 void loop()
 {
+	if(millis() - time >199)
+	{
+		time=millis();
+		lightChase=lightChase + 1 - 4 * (lightChase > 3);
+	}
+	
 	irSen();
 	if(irSen1 == 1 || irSen2 == 1) {
 		forward();
@@ -64,7 +76,4 @@ void loop()
 	else {
 		stop();
 	}
-	Serial.print(irSen1);
-	Serial.print(" ");
-	Serial.println(irSen2);
 }
