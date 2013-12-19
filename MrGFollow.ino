@@ -11,6 +11,13 @@
 #define irdownPin A3
 #define irrightPin A2
 
+#define led1 5
+#define led2 6
+#define led4 8
+#define ledsenPin1 12
+#define ledsenPin2 11
+#define ledsenPin4 9
+
 int panservoCenter=90;
 int xservoMin=0;
 int xservoMax=180;
@@ -48,6 +55,11 @@ int leftmotorMove=leftmotorStop;
 int rightmotorMove=rightmotorStop;
 int motorSpeed=20;
 
+int irSen1;
+int irSen2;
+int irSen4;
+byte lightChase;
+long time;
 
 Servo panServo;
 Servo tiltServo;
@@ -66,17 +78,25 @@ void setup()
 	rightMotor.attach(rightmotorPin);
 	rightMotor.write(rightmotorStop);
 	pinMode(irledPin, OUTPUT);
+	pinMode(led1, OUTPUT);
+	pinMode(led2, OUTPUT);
+	pinMode(led4, OUTPUT);
 }
 
 void loop()
 { 
+	if(millis() - time > 199) {
+		time=millis();
+		lightChase=lightChase + 1 - 4 * (lightChase > 3);
+	}
+	
 	leftMotor.write(leftmotorMove);
 	rightMotor.write(rightmotorMove);
 	panServo.write(pan);	
 	tiltServo.write(tilt);
 	infraDistance();
 	infraFollow();
-	//Serial.println(irDistance);
+	edgeDetect();
 }
 
 void reAttach()
@@ -87,7 +107,6 @@ void reAttach()
 	if(!rightMotor.attached()) 
 		rightMotor.attach(rightmotorPin);
 }
-	
 	
 void stop()
 {
@@ -209,5 +228,29 @@ void infraFollow()
 
 	if(irDistance > bestDistance && pan != xservoMin && pan != xservoMax) {
 		backward();
-	} 
+	}
 }
+
+void edgeDetect()
+{
+	digitalWrite(led1, HIGH);
+	digitalWrite(led2, HIGH);
+	digitalWrite(led4, HIGH);
+	delayMicroseconds(100);
+
+	irSen1=digitalRead(ledsenPin1);
+	irSen2=digitalRead(ledsenPin2);
+	irSen4=digitalRead(ledsenPin4);
+
+	digitalWrite(led1, LOW);
+	digitalWrite(led2, LOW);
+	digitalWrite(led4, LOW);
+	delayMicroseconds(100);
+	
+	digitalWrite(led1, (lightChase == 1 || irSen1 == 0));
+	digitalWrite(led2, (lightChase == 2 || irSen2 == 0));
+	digitalWrite(led4, (lightChase == 4 || irSen4 == 0));
+
+	
+} 
+
