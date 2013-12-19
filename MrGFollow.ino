@@ -250,7 +250,18 @@ void edgeDetect()
 	digitalWrite(led1, (lightChase == 1 || irSen1 == 0));
 	digitalWrite(led2, (lightChase == 2 || irSen2 == 0));
 	digitalWrite(led4, (lightChase == 4 || irSen4 == 0));
+	
+	if(irSen1 == 0 && (leftmotorMove != leftmotorStop || rightmotorMove != rightmotorStop)) {
+		stop();
+	}
+	
+	if(irSen2 == 0 && (leftmotorMove != leftmotorStop || rightmotorMove != rightmotorStop)) {
+                stop();
+        }
 
+	if(irSen4 == 0 && (leftmotorMove != leftmotorStop || rightmotorMove != rightmotorStop)) {
+                stop();
+        }
 	
 } 
 
