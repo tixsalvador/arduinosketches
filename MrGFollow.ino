@@ -48,7 +48,7 @@ int x;
 int tilt=tiltservoCenter;
 int tiltScale;
 byte tiltscaleFactor=3;
-byte tiltservoMultiplier=10;
+byte tiltservoMultiplier=15;
 int y;
  
 int move;
