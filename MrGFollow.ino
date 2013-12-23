@@ -47,8 +47,8 @@ int x;
 
 int tilt=tiltservoCenter;
 int tiltScale;
-byte tiltscaleFactor=3;
-byte tiltservoMultiplier=15;
+byte tiltscaleFactor=12;
+byte tiltservoMultiplier=10;
 int y;
  
 int move;
@@ -265,4 +265,3 @@ void edgeDetect()
         }
 	
 } 
-
