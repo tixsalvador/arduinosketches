@@ -41,7 +41,7 @@ int leftmotorSpeed=leftmotorStop;
 int rightmotorSpeed=rightmotorStop;
 int pan=panservoCenter;
 int panScale;
-byte panscaleFactor=3;
+byte panscaleFactor=12;
 byte panservoMultiplier=10;
 int x;
 
