@@ -1,3 +1,5 @@
+#include<Servo.h>
+
 #define irupPin A4
 #define irdownPin A2
 #define irleftPin A5
@@ -17,9 +19,20 @@ int irleftValue;
 int irrightValue;
 int irDistance;
 
+Servo xservo;
+Servo yservo;
+#define xservoPin 9
+#define yservoPin 10
+int xservoCenter = 75;
+int yservoCenter = 120;
+
 void setup()
 {
 	Serial.begin(9600);
+	xservo.attach(xservoPin);
+	xservo.write(xservoCenter);
+	yservo.attach(yservoPin);
+	yservo.write(yservoCenter);
 	pinMode(irledPin, OUTPUT);
 	for(int i=5;i<=8;i++) {
   		pinMode(i, OUTPUT);
@@ -62,13 +75,13 @@ void forward()
 void loop()
 {
 	getirDistance();
-	if(irDistance > 300) {
+	if(irDistance > 200 && irDistance < 500) {
 		forward();
 	}
 	else {
 		stop();
 	}
-
+/*
 	Serial.print(irDistance);
 	Serial.print(" ");
 	Serial.print(irupValue);
@@ -78,4 +91,5 @@ void loop()
 	Serial.print(irleftValue);
 	Serial.print(" ");
 	Serial.println(irrightValue);
+*/
 }
