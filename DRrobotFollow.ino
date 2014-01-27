@@ -18,6 +18,11 @@ int irdownValue;
 int irleftValue;
 int irrightValue;
 int irDistance;
+int minforwardDistance = 100;
+int maxforwardDistance = 400;
+int maxbackwardDistance = 500;
+
+#define ultrasensorPin 3
 
 Servo xservo;
 Servo yservo;
@@ -72,11 +77,22 @@ void forward()
 	digitalWrite(rightRmotor, LOW);
 }
 
+void backward()
+{
+	analogWrite(leftFmotor, leftmotorSpeed);
+        analogWrite(rightFmotor, rightmotorSpeed);
+        digitalWrite(leftRmotor, HIGH);
+        digitalWrite(rightRmotor, HIGH);
+}
+
 void loop()
 {
 	getirDistance();
-	if(irDistance > 200 && irDistance < 500) {
+	if(irDistance > minforwardDistance && irDistance < maxforwardDistance) {
 		forward();
+	}
+	else if(irDistance > maxbackwardDistance) {
+		backward();
 	}
 	else {
 		stop();
