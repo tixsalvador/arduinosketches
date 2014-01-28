@@ -18,9 +18,9 @@ int irdownValue;
 int irleftValue;
 int irrightValue;
 int irDistance;
-int minforwardDistance = 100;
-int maxforwardDistance = 400;
-int maxbackwardDistance = 500;
+int minforwardDistance = 200;
+int maxforwardDistance = 500;
+int maxbackwardDistance = 600;
 
 #define ultrasensorPin 3
 
@@ -30,6 +30,13 @@ Servo yservo;
 #define yservoPin 10
 int xservoCenter = 75;
 int yservoCenter = 120;
+int pan=xservoCenter;
+int panScale;
+byte panscaleFactor=12;
+byte panservoMultiplier=10;
+int x;
+int xservoMax=160;
+int xservoMin=0;
 
 void setup()
 {
@@ -85,9 +92,37 @@ void backward()
         digitalWrite(rightRmotor, HIGH);
 }
 
+void infraFollow()
+{
+	if(irDistance < minforwardDistance) {
+		if(pan > xservoCenter) {
+			pan=pan - 1;
+		}
+		if(pan < xservoCenter) {
+			pan=pan + 1;
+		}
+	}
+	else {
+		panScale=(irleftValue + irrightValue) * panscaleFactor / 10;
+		x=(irrightValue - irleftValue) * panservoMultiplier / panScale;
+		pan=pan - x;
+	} 
+	if(pan > xservoMax) {
+		pan=xservoMax;
+	}
+	if(pan < xservoMin) {
+		pan=xservoMin;
+	}
+}
 void loop()
 {
+	xservo.write(pan);
 	getirDistance();
+	infraFollow();
+	Serial.print(pan);
+	Serial.print(" ");
+	Serial.println(irDistance);
+/*
 	if(irDistance > minforwardDistance && irDistance < maxforwardDistance) {
 		forward();
 	}
@@ -97,7 +132,7 @@ void loop()
 	else {
 		stop();
 	}
-/*
+
 	Serial.print(irDistance);
 	Serial.print(" ");
 	Serial.print(irupValue);
