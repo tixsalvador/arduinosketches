@@ -114,15 +114,29 @@ void infraFollow()
 		pan=xservoMin;
 	}
 }
+
+int ultrasensorDistance()
+{
+	int distance;
+	unsigned long pulse=0;
+	pinMode(ultrasensorPin, OUTPUT);	
+	digitalWrite(ultrasensorPin, LOW);
+	delayMicroseconds(5);
+	digitalWrite(ultrasensorPin, HIGH);
+	delayMicroseconds(5);
+	digitalWrite(ultrasensorPin, LOW);
+	pinMode(ultrasensorPin, INPUT);
+	pulse=pulseIn(ultrasensorPin, HIGH);
+	distance=(pulse / 2) / 29;
+	return distance;
+}
+
 void loop()
 {
-	xservo.write(pan);
+/*	xservo.write(pan);
 	getirDistance();
 	infraFollow();
-	Serial.print(pan);
-	Serial.print(" ");
-	Serial.println(irDistance);
-/*
+
 	if(irDistance > minforwardDistance && irDistance < maxforwardDistance) {
 		forward();
 	}
@@ -132,10 +146,11 @@ void loop()
 	else {
 		stop();
 	}
+*/
+	Serial.println(ultrasensorDistance());
+/*	Serial.print(" ");
+	Serial.println(pan);
 
-	Serial.print(irDistance);
-	Serial.print(" ");
-	Serial.print(irupValue);
 	Serial.print(" ");
 	Serial.print(irdownValue);
 	Serial.print(" ");
