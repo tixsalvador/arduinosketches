@@ -31,12 +31,19 @@ Servo yservo;
 int xservoCenter = 75;
 int yservoCenter = 120;
 int pan=xservoCenter;
+int tilt=yservoCenter;
 int panScale;
 byte panscaleFactor=12;
 byte panservoMultiplier=10;
+int tiltScale;
+byte tiltscaleFactor=12;
+byte tiltservoMultiplier=10;
 int x;
 int xservoMax=160;
 int xservoMin=0;
+int y;
+int yservoMin=0;
+int yservoMax=140;
 
 void setup()
 {
@@ -101,17 +108,32 @@ void infraFollow()
 		if(pan < xservoCenter) {
 			pan=pan + 1;
 		}
+		if(tilt > yservoCenter) {
+			tilt=tilt - 1;
+		}
+		if(tilt < yservoCenter) {
+			tilt=tilt + 1;
+		}
 	}
 	else {
 		panScale=(irleftValue + irrightValue) * panscaleFactor / 10;
 		x=(irrightValue - irleftValue) * panservoMultiplier / panScale;
 		pan=pan - x;
+		tiltScale=(irupValue + irdownValue) * tiltscaleFactor / 10;
+		y=(irupValue - irdownValue) * tiltservoMultiplier / tiltScale;
+		tilt=tilt - y;
 	} 
 	if(pan > xservoMax) {
 		pan=xservoMax;
 	}
 	if(pan < xservoMin) {
 		pan=xservoMin;
+	}
+	if(tilt > yservoMax) {
+		tilt=yservoMax;
+	}
+	if(tilt < yservoMin) {
+		tilt=yservoMin;
 	}
 }
 
@@ -133,10 +155,11 @@ int ultrasensorDistance()
 
 void loop()
 {
-/*	xservo.write(pan);
+	xservo.write(pan);
+	yservo.write(tilt);
 	getirDistance();
 	infraFollow();
-
+/*
 	if(irDistance > minforwardDistance && irDistance < maxforwardDistance) {
 		forward();
 	}
@@ -146,11 +169,10 @@ void loop()
 	else {
 		stop();
 	}
-*/
+/*
 	Serial.println(ultrasensorDistance());
-/*	Serial.print(" ");
+	Serial.print(" ");
 	Serial.println(pan);
-
 	Serial.print(" ");
 	Serial.print(irdownValue);
 	Serial.print(" ");
