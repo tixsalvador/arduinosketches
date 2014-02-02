@@ -41,6 +41,8 @@ byte tiltservoMultiplier=10;
 int x;
 int xservoMax=160;
 int xservoMin=0;
+int xturnMax=150;
+int xturnMin=10;
 int y;
 int yservoMin=0;
 int yservoMax=140;
@@ -96,6 +98,22 @@ void backward()
 	analogWrite(leftFmotor, leftmotorSpeed);
         analogWrite(rightFmotor, rightmotorSpeed);
         digitalWrite(leftRmotor, HIGH);
+        digitalWrite(rightRmotor, HIGH);
+}
+
+void left()
+{
+        analogWrite(leftFmotor, leftmotorSpeed);
+        analogWrite(rightFmotor, rightmotorSpeed);
+        digitalWrite(leftRmotor, HIGH);
+        digitalWrite(rightRmotor, LOW);
+}
+
+void right()
+{
+        analogWrite(leftFmotor, leftmotorSpeed);
+        analogWrite(rightFmotor, rightmotorSpeed);
+        digitalWrite(leftRmotor, LOW);
         digitalWrite(rightRmotor, HIGH);
 }
 
@@ -159,20 +177,38 @@ void loop()
 	yservo.write(tilt);
 	getirDistance();
 	infraFollow();
-/*
+	
+	if(pan >= xturnMax) {
+		left();
+	}
+	else if(pan <= xturnMin) {
+		right();
+	}
+	else {
+		stop();
+	}
+/*	
+	if(ultrasensorDistance() > 10 && ultrasensorDistance() <= 15) {
+		forward();
+	}
+	else if(ultrasensorDistance() <= 3) {
+		backward();
+	}
+
 	if(irDistance > minforwardDistance && irDistance < maxforwardDistance) {
 		forward();
 	}
 	else if(irDistance > maxbackwardDistance) {
 		backward();
 	}
+
 	else {
 		stop();
 	}
 /*
-	Serial.println(ultrasensorDistance());
+	Serial.print(ultrasensorDistance());
 	Serial.print(" ");
-	Serial.println(pan);
+	Serial.print(pan);
 	Serial.print(" ");
 	Serial.print(irdownValue);
 	Serial.print(" ");
@@ -181,3 +217,4 @@ void loop()
 	Serial.println(irrightValue);
 */
 }
+
