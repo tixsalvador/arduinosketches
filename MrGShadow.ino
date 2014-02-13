@@ -35,9 +35,10 @@ int irDownvalue;
 int irRightvalue;
 int irDistance;
 
-int distanceMax=100;
-int distanceMin=150;
-int bestDistance=550;
+int distanceMin=100;
+int distanceMax=200;
+int bestDistance=450;
+int reverseDistance=550;
 
 int leftmotorSpeed=leftmotorStop;
 int rightmotorSpeed=rightmotorStop;
@@ -166,7 +167,7 @@ void infraFollow()
 {
 	leftmotorSpeed=leftmotorStop;
 	rightmotorSpeed=rightmotorStop;
-	if(irDistance < distanceMax) {
+	if(irDistance < bestDistance) {
 		if(pan > panservoCenter) {
 			pan=pan - 1;
 		}
@@ -226,10 +227,10 @@ void infraFollow()
 	}
 	
 	if(pan == panservoCenter) {
-			if(irDistance  < bestDistance && irDistance > distanceMin) {
+			if(irDistance  < distanceMax && irDistance > distanceMin) {
 				forward();
 			}
-			else if(irDistance > bestDistance) {
+			else if(irDistance > reverseDistance) {
 				backward();
 			}
 			else {
