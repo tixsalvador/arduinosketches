@@ -8,6 +8,7 @@
   NewSoftSerial port(12,13);
 #endif
 
+#include "Servo.h"
 #include "EasyVR.h"
 EasyVR easyvr(port);
 
@@ -43,6 +44,17 @@ int8_t group, idx;
 int leftmotorSpeed = 200;
 int rightmotorSpeed = 200;
 
+Servo xservo;
+Servo yservo;
+#define xservoPin 9
+#define yservoPin 10
+int xservoCenter = 75;
+int xservoMax=160;
+int xservoMin=0;
+int yservoCenter = 120;
+int yservoMin=0;
+int yservoMax=140;
+
 void setup()
 {
   // bridge mode?
@@ -71,6 +83,12 @@ void setup()
   for(int i=5;i<=8;i++) {
   		pinMode(i, OUTPUT);
   	} 
+  	
+  xservo.attach(xservoPin);
+  yservo.attach(yservoPin);
+  xservo.write(xservoCenter);
+  yservo.write(yservoCenter);
+  
 }
 
 void action();
@@ -138,6 +156,11 @@ void action()
       switch (idx)
       {
       case G0_BATIBOT:
+      	xservo.write(xservoMin);
+      	delay(1000);
+      	xservo.write(xservoMax);
+      	delay(1000);
+      	xservo.write(xservoCenter);
         group = GROUP_1;
         break;
       }
