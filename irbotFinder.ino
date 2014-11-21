@@ -14,18 +14,28 @@ void setup()
 
 void loop()
 {
-	left();
-	delay(2000);
-	right();
-	delay(2000);
-	stop();
-	delay(5000);
-/*
 	forward();
-	delay(5000);
-	reverse();
-	delay(5000);	
-*/
+	Serial.println(encoderCount());
+}
+
+int encoderCount()
+{
+	int encoderPin=A0;
+	int encoderData=analogRead(encoderPin);
+	int encoderValue1=0;
+	int encoderValue2=0;
+	int count=0;
+	if(encoderData < 600){
+		encoderValue1=1;
+	}
+	else {
+		encoderValue1=0;
+	}
+	if(encoderValue1 != encoderValue2){
+		count ++;
+	}
+	encoderValue2=encoderValue1;
+	return count;
 }
 
 void forward()
@@ -55,9 +65,9 @@ void left()
 
 void right()
 {
-        analogWrite(5,255);
+        analogWrite(5,100);
         analogWrite(6,255);
-        digitalWrite(7,HIGH);
+        digitalWrite(7,LOW);
         digitalWrite(8,LOW);
 }
 
