@@ -23,10 +23,12 @@ int encoderCount()
 {
 	int encoderData1=analogRead(A0);
 	int encoderData2=analogRead(A1);
+	int motorBreak1=digitalRead(motorbackwardPin1);
+	int motorBreak2=digitalRead(motorbackwardPin2);
 	int encoderValue1=0;
 	int encoderValue2=0;
 	boolean movingForward=false;
-	if((encoderData1 > 600) && (encoderData2 > 600) && ((digitalRead(motorbackwardPin1) == LOW) || (digitalRead(motorbackwardPin2) == LOW))){
+	if((encoderData1 > 600) && (encoderData2 > 600) && ((motorBreak1 == LOW) || (motorBreak2 == LOW))){
 		encoderValue1=1;
 		movingForward=true;
 	}
