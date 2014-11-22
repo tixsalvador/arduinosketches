@@ -2,6 +2,7 @@ int motorforwardPin1=5;
 int motorforwardPin2=6;
 int motorbackwardPin1=7;
 int motorbackwardPin2=8;
+int count=0;
 
 void setup()
 {
@@ -20,18 +21,19 @@ void loop()
 
 int encoderCount()
 {
-	int encoderPin=A0;
-	int encoderData=analogRead(encoderPin);
+	int encoderData1=analogRead(A0);
+	int encoderData2=analogRead(A1);
 	int encoderValue1=0;
 	int encoderValue2=0;
-	int count=0;
-	if(encoderData < 600){
+	boolean movingForward=false;
+	if((encoderData1 > 600) && (encoderData2 > 600) && ((digitalRead(motorbackwardPin1) == LOW) || (digitalRead(motorbackwardPin2) == LOW))){
 		encoderValue1=1;
+		movingForward=true;
 	}
 	else {
 		encoderValue1=0;
 	}
-	if(encoderValue1 != encoderValue2){
+	if((encoderValue1 != encoderValue2) && (movingForward == true)){
 		count ++;
 	}
 	encoderValue2=encoderValue1;
@@ -42,8 +44,8 @@ void forward()
 {
 	analogWrite(5,255);
         analogWrite(6,255);
-        digitalWrite(7,LOW);
-        digitalWrite(8,LOW);
+        digitalWrite(motorbackwardPin1,LOW);
+        digitalWrite(motorbackwardPin2,LOW);
 
 }
 
