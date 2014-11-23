@@ -2,7 +2,7 @@ int motorforwardPin1=5;
 int motorforwardPin2=6;
 int motorbackwardPin1=7;
 int motorbackwardPin2=8;
-int count=0;
+unsigned int count=0;
 
 void setup()
 {
@@ -15,8 +15,15 @@ void setup()
 
 void loop()
 {
-	forward();
-	Serial.println(encoderCount());
+//	forward();
+//	Serial.println(encoderCount());
+
+	while(encoderCount() < 500 && encoderCount() >=0 ) {
+		Serial.println(encoderCount());
+		forward();
+	}
+	stop();
+	
 }
 
 int encoderCount()
@@ -28,7 +35,8 @@ int encoderCount()
 	int encoderValue1=0;
 	int encoderValue2=0;
 	boolean movingForward=false;
-	if((encoderData1 > 600) && (encoderData2 > 600) && ((motorBreak1 == LOW) || (motorBreak2 == LOW))){
+
+	if((encoderData1 < 500) && (encoderData2 < 500) && ((motorBreak1 == LOW) || (motorBreak2 == LOW))){
 		encoderValue1=1;
 		movingForward=true;
 	}
