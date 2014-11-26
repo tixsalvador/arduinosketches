@@ -1,3 +1,8 @@
+int northPin=A5;
+int eastPin=A4;
+int southPin=A3;
+int westPin=A2;
+
 int motorforwardPin1=5;
 int motorforwardPin2=6;
 int motorbackwardPin1=7;
@@ -15,15 +20,19 @@ void setup()
 
 void loop()
 {
-//	forward();
-//	Serial.println(encoderCount());
+	int north=analogRead(northPin);
+	int east=analogRead(eastPin);
+	int south=analogRead(southPin);
+	int west=analogRead(westPin);
+	Serial.print(north);
+	Serial.print("	");
+	Serial.print(east);
+	Serial.print("	");
+	Serial.print(south);
+	Serial.print("	");
+	Serial.println(west);
+	delay(1000);
 
-	while(encoderCount() < 500 && encoderCount() >=0 ) {
-		Serial.println(encoderCount());
-		forward();
-	}
-	stop();
-	
 }
 
 int encoderCount()
