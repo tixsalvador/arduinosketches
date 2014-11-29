@@ -12,27 +12,40 @@ unsigned int count=0;
 void setup()
 {
 	Serial.begin(9600);
+	pinMode(A2, INPUT);
+	pinMode(A3, INPUT);
+	pinMode(A4, INPUT);
+	pinMode(A5, INPUT);
 	pinMode(5, OUTPUT);
 	pinMode(6, OUTPUT);
 	pinMode(7, OUTPUT);
 	pinMode(8, OUTPUT);
+
 }
 
 void loop()
 {
-	int north=analogRead(northPin);
-	int east=analogRead(eastPin);
-	int south=analogRead(southPin);
-	int west=analogRead(westPin);
-	Serial.print(north);
-	Serial.print("	");
-	Serial.print(east);
-	Serial.print("	");
-	Serial.print(south);
-	Serial.print("	");
-	Serial.println(west);
-	delay(1000);
+	struct sensorData {
+		int northData;
+		int eastData;
+		int westData;
+		int southData;
+	};
+	int northReading=analogRead(northPin);
+	int eastReading=analogRead(eastPin);
+	int southReading=analogRead(southPin);
+	int westReading=analogRead(westPin);
+	struct sensorData sensorReading[10];
+	for(int i=0;i<=9;i++){
+		sensorReading[i].northData=northReading;
+		sensorReading[i].eastData=eastReading;
+		sensorReading[i].westData=westReading;
+		sensorReading[i].southData=southReading;
+//		Serial.println(sensorReading[i].northData);
+		delay(300);
+	}
 
+	
 }
 
 int encoderCount()
