@@ -35,14 +35,27 @@ void loop()
 	int eastReading=analogRead(eastPin);
 	int southReading=analogRead(southPin);
 	int westReading=analogRead(westPin);
-	struct sensorData sensorReading[10];
+	struct sensorData sensorReading[40];
 	for(int i=0;i<=9;i++){
 		sensorReading[i].northData=northReading;
 		sensorReading[i].eastData=eastReading;
 		sensorReading[i].westData=westReading;
 		sensorReading[i].southData=southReading;
-//		Serial.println(sensorReading[i].northData);
 		delay(300);
+		if(sensorReading[i].northData < 100){
+			Serial.println("North");
+		}
+		else if(sensorReading[i].eastData < 100){
+			Serial.println("East");
+		}
+		else if(sensorReading[i].westData < 100){
+			Serial.println("West");
+		}
+		else if(sensorReading[i].southData < 100){
+			Serial.println("South");
+		}
+		else
+			Serial.println("I'm LOST");
 	}
 
 	
