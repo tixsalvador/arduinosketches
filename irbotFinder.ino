@@ -20,10 +20,15 @@ void setup()
 	pinMode(6, OUTPUT);
 	pinMode(7, OUTPUT);
 	pinMode(8, OUTPUT);
+	direction();
 
 }
 
 void loop()
+{
+}
+
+void direction()
 {
 	struct sensorData {
 		int northData;
@@ -35,30 +40,44 @@ void loop()
 	int eastReading=analogRead(eastPin);
 	int southReading=analogRead(southPin);
 	int westReading=analogRead(westPin);
-	struct sensorData sensorReading[40];
+	int N=0;
+	int E=0;
+	int W=0;
+	int S=0;
+	struct sensorData sensorReading[60];
 	for(int i=0;i<=9;i++){
 		sensorReading[i].northData=northReading;
 		sensorReading[i].eastData=eastReading;
 		sensorReading[i].westData=westReading;
 		sensorReading[i].southData=southReading;
-		delay(300);
 		if(sensorReading[i].northData < 100){
-			Serial.println("North");
+			N += 1;
 		}
 		else if(sensorReading[i].eastData < 100){
-			Serial.println("East");
+			E += 1;
 		}
 		else if(sensorReading[i].westData < 100){
-			Serial.println("West");
+			W += 1;
 		}
 		else if(sensorReading[i].southData < 100){
-			Serial.println("South");
+			S += 1;
 		}
-		else
-			Serial.println("I'm LOST");
+		delay(100);
 	}
-
-	
+	if((N>E) && (N>W) && (N>S)) {
+		Serial.println("North");
+	}
+	else if((E>N) && (E>W) && (E>S)){
+		Serial.println("East");
+	}
+	else if((W>N) && (W>E) && (W>S)){
+		Serial.println("West");
+	}
+	else if((S>N) && (S>E) && (S>W)){
+		Serial.println("South");
+	}
+	else
+		Serial.println("I'm LOST");
 }
 
 int encoderCount()
