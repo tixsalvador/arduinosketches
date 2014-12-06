@@ -28,7 +28,7 @@ void loop()
 {
 }
 
-void direction()
+int direction()
 {
 	struct sensorData {
 		int northData;
@@ -44,6 +44,7 @@ void direction()
 	int E=0;
 	int W=0;
 	int S=0;
+	int irDirection=0;
 	struct sensorData sensorReading[60];
 	for(int i=0;i<=9;i++){
 		sensorReading[i].northData=northReading;
@@ -65,19 +66,25 @@ void direction()
 		delay(100);
 	}
 	if((N>E) && (N>W) && (N>S)) {
+		irDirection=1;
 		Serial.println("North");
 	}
 	else if((E>N) && (E>W) && (E>S)){
+		irDirection=2;
 		Serial.println("East");
 	}
 	else if((W>N) && (W>E) && (W>S)){
+		irDirection=3;
 		Serial.println("West");
 	}
 	else if((S>N) && (S>E) && (S>W)){
+		irDirection=4;
 		Serial.println("South");
 	}
 	else
+		irDirection=0;
 		Serial.println("I'm LOST");
+	return irDirection;
 }
 
 int encoderCount()
