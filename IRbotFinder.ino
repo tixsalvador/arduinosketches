@@ -58,7 +58,7 @@ int direction()
 	int W=0;
 	int S=0;
 	int irDirection=0;
-	struct sensorData sensorReading[60];
+	struct sensorData sensorReading[25];
 	for(int i=0;i<=4;i++){
 		sensorReading[i].northData=northReading;
 		sensorReading[i].eastData=eastReading;
