@@ -20,12 +20,25 @@ void setup()
 	pinMode(6, OUTPUT);
 	pinMode(7, OUTPUT);
 	pinMode(8, OUTPUT);
-	direction();
 
 }
 
 void loop()
 {
+	if(direction()==1){
+		forward();
+	}
+	else if(direction()==2){
+		rightTurn();
+	}
+	else if(direction()==3){
+		leftTurn();
+	}
+	else if(direction()==4){
+		leftTurn();
+	}
+	else
+	stop();
 }
 
 int direction()
@@ -46,7 +59,7 @@ int direction()
 	int S=0;
 	int irDirection=0;
 	struct sensorData sensorReading[60];
-	for(int i=0;i<=9;i++){
+	for(int i=0;i<=4;i++){
 		sensorReading[i].northData=northReading;
 		sensorReading[i].eastData=eastReading;
 		sensorReading[i].westData=westReading;
@@ -63,27 +76,22 @@ int direction()
 		else if(sensorReading[i].southData < 100){
 			S += 1;
 		}
-		delay(100);
+		delay(25);
 	}
 	if((N>E) && (N>W) && (N>S)) {
 		irDirection=1;
-		Serial.println("North");
 	}
 	else if((E>N) && (E>W) && (E>S)){
 		irDirection=2;
-		Serial.println("East");
 	}
 	else if((W>N) && (W>E) && (W>S)){
 		irDirection=3;
-		Serial.println("West");
 	}
 	else if((S>N) && (S>E) && (S>W)){
 		irDirection=4;
-		Serial.println("South");
 	}
 	else
 		irDirection=0;
-		Serial.println("I'm LOST");
 	return irDirection;
 }
 
@@ -136,12 +144,27 @@ void left()
         digitalWrite(8,HIGH);
 }
 
+void leftTurn(){
+        analogWrite(5,255);
+        analogWrite(6,255);
+        digitalWrite(motorbackwardPin1,LOW);
+        digitalWrite(motorbackwardPin2,HIGH);
+}
+
+
 void right()
 {
         analogWrite(5,100);
         analogWrite(6,255);
         digitalWrite(7,LOW);
         digitalWrite(8,LOW);
+}
+
+void rightTurn(){
+	analogWrite(5,255);
+        analogWrite(6,255);
+        digitalWrite(motorbackwardPin1,HIGH);
+        digitalWrite(motorbackwardPin2,LOW);
 }
 
 void stop()
