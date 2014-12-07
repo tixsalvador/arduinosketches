@@ -3,10 +3,14 @@ int eastPin=A4;
 int southPin=A3;
 int westPin=A2;
 
-int motorforwardPin1=5;
-int motorforwardPin2=6;
-int motorbackwardPin1=7;
-int motorbackwardPin2=8;
+const int motorforwardPin1=5;
+const int motorforwardPin2=6;
+const int motorbackwardPin1=7;
+const int motorbackwardPin2=8;
+
+int motorSpeed=255;
+int turnLeft=0;
+int turnRight=0;
 unsigned int count=0;
 
 void setup()
@@ -35,7 +39,11 @@ void loop()
 		leftTurn();
 	}
 	else if(direction()==4){
-		leftTurn();
+		if(turnLeft > turnRight){
+			leftTurn();
+		}
+		else 
+			rightTurn();
 	}
 	else
 	stop();
@@ -88,6 +96,8 @@ int direction()
 		irDirection=3;
 	}
 	else if((S>N) && (S>E) && (S>W)){
+		turnLeft=W;
+		turnRight=E;
 		irDirection=4;
 	}
 	else
@@ -121,8 +131,8 @@ int encoderCount()
 
 void forward()
 {
-	analogWrite(5,255);
-        analogWrite(6,255);
+	analogWrite(5,motorSpeed);
+        analogWrite(6,motorSpeed);
         digitalWrite(motorbackwardPin1,LOW);
         digitalWrite(motorbackwardPin2,LOW);
 
@@ -130,23 +140,23 @@ void forward()
 
 void reverse()
 {
-	analogWrite(5,255);
-        analogWrite(6,255);
+	analogWrite(5,motorSpeed);
+        analogWrite(6,motorSpeed);
 	digitalWrite(7,HIGH);
         digitalWrite(8,HIGH);
 }
 
 void left()
 {
-	 analogWrite(5,255);
-        analogWrite(6,255);
+	 analogWrite(5,motorSpeed);
+        analogWrite(6,100);
 	digitalWrite(7,LOW);
         digitalWrite(8,HIGH);
 }
 
 void leftTurn(){
-        analogWrite(5,255);
-        analogWrite(6,255);
+        analogWrite(5,motorSpeed);
+        analogWrite(6,motorSpeed);
         digitalWrite(motorbackwardPin1,LOW);
         digitalWrite(motorbackwardPin2,HIGH);
 }
@@ -155,14 +165,14 @@ void leftTurn(){
 void right()
 {
         analogWrite(5,100);
-        analogWrite(6,255);
+        analogWrite(6,motorSpeed);
         digitalWrite(7,LOW);
         digitalWrite(8,LOW);
 }
 
 void rightTurn(){
-	analogWrite(5,255);
-        analogWrite(6,255);
+	analogWrite(5,motorSpeed);
+        analogWrite(6,motorSpeed);
         digitalWrite(motorbackwardPin1,HIGH);
         digitalWrite(motorbackwardPin2,LOW);
 }
