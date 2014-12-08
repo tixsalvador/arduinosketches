@@ -9,8 +9,6 @@ const int motorbackwardPin1=7;
 const int motorbackwardPin2=8;
 
 int motorSpeed=255;
-int turnLeft=0;
-int turnRight=0;
 unsigned int count=0;
 
 void setup()
@@ -29,6 +27,11 @@ void setup()
 
 void loop()
 {
+	move();
+}
+
+void move()
+{
 	if(direction()==1){
 		forward();
 	}
@@ -39,11 +42,16 @@ void loop()
 		leftTurn();
 	}
 	else if(direction()==4){
-		if(turnLeft > turnRight){
+		int turnLeft=analogRead(westPin);
+		int turnRight=analogRead(eastPin);
+		if(turnLeft < turnRight){
 			leftTurn();
 		}
-		else 
+		else if(turnLeft > turnRight){
 			rightTurn();
+		}
+		else
+			stop();
 	}
 	else
 	stop();
@@ -96,8 +104,6 @@ int direction()
 		irDirection=3;
 	}
 	else if((S>N) && (S>E) && (S>W)){
-		turnLeft=W;
-		turnRight=E;
 		irDirection=4;
 	}
 	else
