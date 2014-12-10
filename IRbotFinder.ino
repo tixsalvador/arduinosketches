@@ -11,6 +11,8 @@ const int motorbackwardPin2=8;
 int motorSpeed=255;
 unsigned int count=0;
 
+const int ultrasensorPin=3;
+
 void setup()
 {
 	Serial.begin(9600);
@@ -50,8 +52,6 @@ void move()
 		else if(turnLeft > turnRight){
 			rightTurn();
 		}
-		else
-			stop();
 	}
 	else
 	stop();
@@ -109,6 +109,21 @@ int direction()
 	else
 		irDirection=0;
 	return irDirection;
+}
+
+
+int distance()
+{
+        pinMode(ultrasensorPin, OUTPUT);
+        digitalWrite(ultrasensorPin, LOW);
+        delayMicroseconds(5);
+        digitalWrite(ultrasensorPin,HIGH);
+        delayMicroseconds(5);
+        digitalWrite(ultrasensorPin, LOW);
+        pinMode(ultrasensorPin, INPUT);
+        int duration=pulseIn(ultrasensorPin, HIGH);
+        duration=(duration/29)/2;
+        return duration;
 }
 
 int encoderCount()
@@ -190,3 +205,29 @@ void stop()
 	digitalWrite(7,LOW);
         digitalWrite(8,LOW);
 }
+
+/*
+int encoderCount()
+{
+        int encoderData1=analogRead(A0);
+        int encoderData2=analogRead(A1);
+        int motorBreak1=digitalRead(motorbackwardPin1);
+        int motorBreak2=digitalRead(motorbackwardPin2);
+        int encoderValue1=0;
+        int encoderValue2=0;
+        boolean movingForward=false;
+
+        if((encoderData1 < 500) && (encoderData2 < 500) && ((motorBreak1 == LOW) || (motorBreak2 == LOW))){
+                encoderValue1=1;
+                movingForward=true;
+        }
+        else {
+                encoderValue1=0;
+        }
+        if((encoderValue1 != encoderValue2) && (movingForward == true)){
+                count ++;
+        }
+        encoderValue2=encoderValue1;
+        return count;
+}
+*/
