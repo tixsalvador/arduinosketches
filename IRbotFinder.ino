@@ -29,8 +29,7 @@ void setup()
 
 void loop()
 {
-	Serial.println(objectinFront());
-	//move();
+//	move();
 }
 
 void move()
@@ -117,9 +116,10 @@ boolean objectinFront()
 {
 	int x=0;
 	int y=0;
+	const int crashZone=7;
 	boolean crash;
 	int duration[10];
-	for(int i;i<5;i++){
+	for(int i=0;i<5;i++){
         	pinMode(ultrasensorPin, OUTPUT);
         	digitalWrite(ultrasensorPin, LOW);
         	delayMicroseconds(5);
@@ -129,7 +129,7 @@ boolean objectinFront()
         	pinMode(ultrasensorPin, INPUT);
         	duration[i]=pulseIn(ultrasensorPin, HIGH);
         	duration[i]=(duration[i]/29)/2;
-		if(duration[i]<10){
+		if(duration[i]<crashZone){
 			x += 1;
 		}
 		else
