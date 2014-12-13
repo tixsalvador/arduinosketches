@@ -29,7 +29,8 @@ void setup()
 
 void loop()
 {
-	move();
+	Serial.println(objectinFront());
+	//move();
 }
 
 void move()
@@ -112,18 +113,34 @@ int direction()
 }
 
 
-int distance()
+boolean objectinFront()
 {
-        pinMode(ultrasensorPin, OUTPUT);
-        digitalWrite(ultrasensorPin, LOW);
-        delayMicroseconds(5);
-        digitalWrite(ultrasensorPin,HIGH);
-        delayMicroseconds(5);
-        digitalWrite(ultrasensorPin, LOW);
-        pinMode(ultrasensorPin, INPUT);
-        int duration=pulseIn(ultrasensorPin, HIGH);
-        duration=(duration/29)/2;
-        return duration;
+	int x=0;
+	int y=0;
+	boolean crash;
+	int duration[10];
+	for(int i;i<5;i++){
+        	pinMode(ultrasensorPin, OUTPUT);
+        	digitalWrite(ultrasensorPin, LOW);
+        	delayMicroseconds(5);
+        	digitalWrite(ultrasensorPin,HIGH);
+        	delayMicroseconds(5);
+        	digitalWrite(ultrasensorPin, LOW);
+        	pinMode(ultrasensorPin, INPUT);
+        	duration[i]=pulseIn(ultrasensorPin, HIGH);
+        	duration[i]=(duration[i]/29)/2;
+		if(duration[i]<10){
+			x += 1;
+		}
+		else
+			y += 1;
+	}
+	if(x>y){
+		crash=true;
+	}
+	else
+		crash=false;
+	return crash;
 }
 
 void forward()
