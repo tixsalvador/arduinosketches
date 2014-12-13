@@ -126,30 +126,6 @@ int distance()
         return duration;
 }
 
-int encoderCount()
-{
-	int encoderData1=analogRead(A0);
-	int encoderData2=analogRead(A1);
-	int motorBreak1=digitalRead(motorbackwardPin1);
-	int motorBreak2=digitalRead(motorbackwardPin2);
-	int encoderValue1=0;
-	int encoderValue2=0;
-	boolean movingForward=false;
-
-	if((encoderData1 < 500) && (encoderData2 < 500) && ((motorBreak1 == LOW) || (motorBreak2 == LOW))){
-		encoderValue1=1;
-		movingForward=true;
-	}
-	else {
-		encoderValue1=0;
-	}
-	if((encoderValue1 != encoderValue2) && (movingForward == true)){
-		count ++;
-	}
-	encoderValue2=encoderValue1;
-	return count;
-}
-
 void forward()
 {
 	analogWrite(5,motorSpeed);
