@@ -24,12 +24,36 @@ void setup()
 	pinMode(6, OUTPUT);
 	pinMode(7, OUTPUT);
 	pinMode(8, OUTPUT);
+	pinMode(11, OUTPUT);
 
 }
 
 void loop()
 {
-//	move();
+	int irledPin=11;
+	int leftsensorPin=A0;
+	int rightsensorPin=A1;
+	digitalWrite(irledPin, HIGH);
+	delayMicroseconds(100);
+	int leftpinValue=analogRead(A0);
+	int rightpinValue=analogRead(A1);
+	digitalWrite(irledPin, LOW);
+	delayMicroseconds(100);
+	leftpinValue=leftpinValue - analogRead(leftsensorPin);
+	rightpinValue=rightpinValue - analogRead(rightsensorPin);
+	int ircompoundDistance=(leftpinValue + rightpinValue) / 2;
+	Serial.print(leftpinValue);
+	Serial.print("	");
+	Serial.print(rightpinValue);
+	Serial.print("	");
+	Serial.println(ircompoundDistance);
+	
+	if(distance()>10){
+		move();
+	}
+	else if((distance()<7)||(ircompoundDistance>400)){
+		stop();
+	}	
 }
 
 void move()
@@ -112,43 +136,27 @@ int direction()
 }
 
 
-boolean objectinFront()
+int distance()
 {
-	int x=0;
-	int y=0;
-	const int crashZone=7;
-	boolean crash;
-	int duration[10];
-	for(int i=0;i<5;i++){
-        	pinMode(ultrasensorPin, OUTPUT);
-        	digitalWrite(ultrasensorPin, LOW);
-        	delayMicroseconds(5);
-        	digitalWrite(ultrasensorPin,HIGH);
-        	delayMicroseconds(5);
-        	digitalWrite(ultrasensorPin, LOW);
-        	pinMode(ultrasensorPin, INPUT);
-        	duration[i]=pulseIn(ultrasensorPin, HIGH);
-        	duration[i]=(duration[i]/29)/2;
-		if(duration[i]<crashZone){
-			x += 1;
-		}
-		else
-			y += 1;
-	}
-	if(x>y){
-		crash=true;
-	}
-	else
-		crash=false;
-	return crash;
+	int duration;
+       	pinMode(ultrasensorPin, OUTPUT);
+       	digitalWrite(ultrasensorPin, LOW);
+       	delayMicroseconds(5);
+       	digitalWrite(ultrasensorPin,HIGH);
+       	delayMicroseconds(5);
+       	digitalWrite(ultrasensorPin, LOW);
+       	pinMode(ultrasensorPin, INPUT);
+       	duration=pulseIn(ultrasensorPin, HIGH);
+       	duration=(duration/29)/2;
+	return duration;
 }
 
 void forward()
 {
-	analogWrite(5,motorSpeed);
-        analogWrite(6,motorSpeed);
-        digitalWrite(motorbackwardPin1,LOW);
-        digitalWrite(motorbackwardPin2,LOW);
+		analogWrite(5,motorSpeed);
+        	analogWrite(6,motorSpeed);
+        	digitalWrite(motorbackwardPin1,LOW);
+        	digitalWrite(motorbackwardPin2,LOW);
 
 }
 
