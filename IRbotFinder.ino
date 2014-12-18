@@ -89,10 +89,10 @@ int direction()
 		int westData;
 		int southData;
 	};
-	int northReading=analogRead(northPin);
-	int eastReading=analogRead(eastPin);
-	int southReading=analogRead(southPin);
-	int westReading=analogRead(westPin);
+	int northReading;
+	int eastReading;
+	int southReading;
+	int westReading;
 	int N=0;
 	int E=0;
 	int W=0;
@@ -100,6 +100,10 @@ int direction()
 	int irDirection=0;
 	struct sensorData sensorReading[25];
 	for(int i=0;i<=4;i++){
+		northReading=analogRead(northPin);
+        	eastReading=analogRead(eastPin);
+        	southReading=analogRead(southPin);
+        	westReading=analogRead(westPin);
 		sensorReading[i].northData=northReading;
 		sensorReading[i].eastData=eastReading;
 		sensorReading[i].westData=westReading;
