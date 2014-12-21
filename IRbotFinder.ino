@@ -25,35 +25,31 @@ void setup()
 	pinMode(7, OUTPUT);
 	pinMode(8, OUTPUT);
 	pinMode(11, OUTPUT);
+	int irledPin=11;
+        int leftsensorPin=A0;
+        int rightsensorPin=A1;
+        struct compoundIR {
+                int leftsensorValue;
+                int rightsensorValue;
+                int irDistance;
+        };
+        struct compoundIR irValue[15];
+        for(int i=0;i<4;i++){
+                digitalWrite(irledPin,HIGH);
+                delayMicroseconds(100);
+                irValue[i].leftsensorValue=analogRead(leftsensorPin);
+                irValue[i].rightsensorValue=analogRead(rightsensorPin);
+                digitalWrite(irledPin,LOW);
+                delayMicroseconds(100);
+                irValue[i].leftsensorValue=irValue[i].leftsensorValue-analogRead(leftsensorPin);
+                irValue[i].rightsensorValue=irValue[i].rightsensorValue-analogRead(rightsensorPin);
+                irValue[i].irDistance=(irValue[i].leftsensorValue+irValue[i].rightsensorValue)/2;
+        }
 
 }
 
 void loop()
 {
-	int irledPin=11;
-	int leftsensorPin=A0;
-	int rightsensorPin=A1;
-	digitalWrite(irledPin, HIGH);
-	delayMicroseconds(100);
-	int leftpinValue=analogRead(A0);
-	int rightpinValue=analogRead(A1);
-	digitalWrite(irledPin, LOW);
-	delayMicroseconds(100);
-	leftpinValue=leftpinValue - analogRead(leftsensorPin);
-	rightpinValue=rightpinValue - analogRead(rightsensorPin);
-	int ircompoundDistance=(leftpinValue + rightpinValue) / 2;
-	Serial.print(leftpinValue);
-	Serial.print("	");
-	Serial.print(rightpinValue);
-	Serial.print("	");
-	Serial.println(ircompoundDistance);
-	
-	if(distance()>10){
-		move();
-	}
-	else if((distance()<7)||(ircompoundDistance>400)){
-		stop();
-	}	
 }
 
 void move()
