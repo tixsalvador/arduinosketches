@@ -25,16 +25,29 @@ void setup()
 	pinMode(7, OUTPUT);
 	pinMode(8, OUTPUT);
 	pinMode(11, OUTPUT);
+}
+
+void loop()
+{
+	irCompound();
+}
+
+void irCompound()
+{
 	int irledPin=11;
         int leftsensorPin=A0;
         int rightsensorPin=A1;
+        int index=4;
+	int leftsensorAverage=0;
+	int rightsensorAverage=0;
+        int irdistanceAverage=0;
         struct compoundIR {
                 int leftsensorValue;
                 int rightsensorValue;
                 int irDistance;
         };
         struct compoundIR irValue[15];
-        for(int i=0;i<4;i++){
+        for(int i=0;i<index;i++){
                 digitalWrite(irledPin,HIGH);
                 delayMicroseconds(100);
                 irValue[i].leftsensorValue=analogRead(leftsensorPin);
@@ -44,12 +57,13 @@ void setup()
                 irValue[i].leftsensorValue=irValue[i].leftsensorValue-analogRead(leftsensorPin);
                 irValue[i].rightsensorValue=irValue[i].rightsensorValue-analogRead(rightsensorPin);
                 irValue[i].irDistance=(irValue[i].leftsensorValue+irValue[i].rightsensorValue)/2;
+		leftsensorAverage=leftsensorAverage+irValue[i].leftsensorValue;
+		rightsensorAverage=rightsensorAverage+irValue[i].rightsensorValue;
+                irdistanceAverage=irdistanceAverage+irValue[i].irDistance;
         }
-
-}
-
-void loop()
-{
+	leftsensorAverage=leftsensorAverage/index;
+	rightsensorAverage=rightsensorAverage/index;
+        irdistanceAverage=irdistanceAverage/index;
 }
 
 void move()
