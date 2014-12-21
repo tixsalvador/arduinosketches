@@ -29,7 +29,28 @@ void setup()
 
 void loop()
 {
-	irCompound();
+	Serial.println(ultraSensor());
+}
+	
+int ultraSensor()
+{
+        int ultrasensorDistance=0;
+        int index=4;
+        int duration[5];
+        for(int i=0;i<index;i++){
+                pinMode(ultrasensorPin, OUTPUT);
+                digitalWrite(ultrasensorPin, LOW);
+                delayMicroseconds(5);
+                digitalWrite(ultrasensorPin,HIGH);
+                delayMicroseconds(5);
+                digitalWrite(ultrasensorPin, LOW);
+                pinMode(ultrasensorPin, INPUT);
+                duration[i]=pulseIn(ultrasensorPin, HIGH);
+                duration[i]=(duration[i]/29)/2;
+                ultrasensorDistance=ultrasensorDistance+duration[i];
+        }
+        ultrasensorDistance=ultrasensorDistance/index;
+        return ultrasensorDistance;
 }
 
 void irCompound()
@@ -147,22 +168,6 @@ int direction()
 	else
 		irDirection=0;
 	return irDirection;
-}
-
-
-int distance()
-{
-	int duration;
-       	pinMode(ultrasensorPin, OUTPUT);
-       	digitalWrite(ultrasensorPin, LOW);
-       	delayMicroseconds(5);
-       	digitalWrite(ultrasensorPin,HIGH);
-       	delayMicroseconds(5);
-       	digitalWrite(ultrasensorPin, LOW);
-       	pinMode(ultrasensorPin, INPUT);
-       	duration=pulseIn(ultrasensorPin, HIGH);
-       	duration=(duration/29)/2;
-	return duration;
 }
 
 void forward()
