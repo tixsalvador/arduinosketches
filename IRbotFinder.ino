@@ -1,3 +1,5 @@
+#include<Servo.h>
+
 int northPin=A5;
 int eastPin=A4;
 int southPin=A3;
@@ -13,6 +15,13 @@ unsigned int count=0;
 
 const int ultrasensorPin=3;
 
+Servo xservo;
+Servo yservo;
+const int xCenter=75;
+const int xLeft=160;
+const int xRight=0;
+const int yCenter=120;
+
 void setup()
 {
 	Serial.begin(9600);
@@ -25,19 +34,18 @@ void setup()
 	pinMode(7, OUTPUT);
 	pinMode(8, OUTPUT);
 	pinMode(11, OUTPUT);
+	xservo.attach(9);
+	yservo.attach(10);
+	xservo.write(xCenter);
+	yservo.write(yCenter);
 }
 
 void loop()
 {
-	if((ultraSensor()<10)||(irCompound()>200)){
+	while((ultraSensor()<10)||(irCompound()>200)){
 		stop();
 	}
-	else {
-		forward();
-	}
-	Serial.print(ultraSensor());
-	Serial.print("	");
-	Serial.println(irCompound());
+	forward();
 }
 	
 int ultraSensor()
