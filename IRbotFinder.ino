@@ -42,8 +42,11 @@ void setup()
 
 void loop()
 {
-	while((ultraSensor()<10)||(irCompound()>200)){
+	while((ultraSensor()<10)||((irCompound()<300)&&(irCompound()>200))){
 		stop();
+	}
+	while(irCompound()>300){
+		reverse();
 	}
 	forward();
 }
