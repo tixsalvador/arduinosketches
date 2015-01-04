@@ -45,7 +45,7 @@ void loop()
 	while((ultraSensor()<10)||((irCompound()<300)&&(irCompound()>200))){
 		stop();
 	}
-	while(irCompound()>300){
+	while((ultraSensor()<5)||(irCompound()>300)){
 		reverse();
 	}
 	forward();
