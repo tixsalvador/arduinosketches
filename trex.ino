@@ -16,6 +16,8 @@ int rightMotorSpeed=100;
 int leftMotorCurrent;
 int rightMotorCurrent;
 
+int lowVoltReading=6;
+
 void setup()
 {
 	Serial.begin(9600);
@@ -50,8 +52,16 @@ float voltReading()
 	return voltRead;
 }
 
+void checkVolt()
+{
+	if(voltReading()<lowVoltReading){
+		shutOff();
+	}
+}
+
 void loop()
 {
+		checkVolt();
 		return;
 		reverse();
 		leftMotorCurrent=analogRead(leftCurrentPin);
