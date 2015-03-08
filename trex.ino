@@ -37,6 +37,7 @@ void shutOff()
 
 void reverse()
 {	
+	checkVolt();
 	digitalWrite(rightBreakPin,LOW);
 	analogWrite(rightSpeedPin, rightMotorSpeed);
 	digitalWrite(rightMotorPin,LOW);
@@ -61,7 +62,6 @@ void checkVolt()
 
 void loop()
 {
-		checkVolt();
 		return;
 		reverse();
 		leftMotorCurrent=analogRead(leftCurrentPin);
