@@ -1,4 +1,4 @@
-#define batteryPin A3;
+#define batteryPin A3
 
 #define leftMotorPin 2
 #define leftBreakPin 4
@@ -10,7 +10,8 @@
 #define	rightSpeedPin 11
 #define rightCurrentPin A7
 
-int motorSpeed=100;
+int leftMotorSpeed=100;
+int rightMotorSpeed=100;
 
 int leftMotorCurrent;
 int rightMotorCurrent;
@@ -24,30 +25,38 @@ void setup()
 	}
 }
 
+void shutOff()
+{
+	digitalWrite(leftBreakPin, HIGH);
+	digitalWrite(rightBreakPin,HIGH);
+	analogWrite(leftSpeedPin, 0);
+	analogWrite(rightSpeedPin, 0);
+}
+
 void reverse()
 {	
 	digitalWrite(rightBreakPin,LOW);
-	analogWrite(rightSpeedPin, motorSpeed);
+	analogWrite(rightSpeedPin, rightMotorSpeed);
 	digitalWrite(rightMotorPin,LOW);
 	digitalWrite(leftBreakPin, LOW);
-	analogWrite(leftSpeedPin, motorSpeed);
+	analogWrite(leftSpeedPin, leftMotorSpeed);
 	digitalWrite(leftMotorPin,LOW);
 }
 
-float batVoltReading()
+float voltReading()
 {
-	int batVolt=analogRead(batteryPin);
-	batVolt=(batVolt/33.57);
-	return batVolt;	
+	float voltRead=analogRead(batteryPin);
+	voltRead=voltRead/33.57;
+	return voltRead;
 }
 
 void loop()
 {
-	reverse();
-	
-	leftMotorCurrent=analogRead(leftCurrentPin);
-        rightMotorCurrent=analogRead(rightCurrentPin);
-        Serial.print(leftMotorCurrent);
-        Serial.print("  ");
-        Serial.println(rightMotorCurrent);
+		return;
+		reverse();
+		leftMotorCurrent=analogRead(leftCurrentPin);
+        	rightMotorCurrent=analogRead(rightCurrentPin);
+        	Serial.print(leftMotorCurrent);
+        	Serial.print("  ");
+        	Serial.println(rightMotorCurrent);
 }
