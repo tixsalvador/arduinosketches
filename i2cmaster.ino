@@ -1,19 +1,27 @@
-#include <Wire.h>
+//I2C Master
+
+#include<Wire.h>
 
 void setup()
 {
+	Serial.begin(9600);
 	Wire.begin();
 }
 
 void loop()
 {
-	Wire.beginTransmission(10);
-	Wire.write('H');
-	Wire.endTransmission();
-	delay(5000);
-
-	Wire.beginTransmission(10);
-	Wire.write('L');
-	Wire.endTransmission();
-	delay(5000);
+	int receivedValue;
+	int receivedValue2;
+	int available=Wire.requestFrom(5,(byte)4);
+	if(available==4){
+		receivedValue=Wire.read()<<8|Wire.read();
+		receivedValue2=Wire.read()<<8|Wire.read();
+		Serial.println(receivedValue);
+		Serial.print("\t");
+		Serial.println(receivedValue2);
+	}
+	else {
+		Serial.print("Error:Unexpected bytes");
+		Serial.println(available);
+	}
 }
