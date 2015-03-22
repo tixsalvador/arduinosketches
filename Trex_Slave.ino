@@ -8,6 +8,8 @@ int Xaxis;
 int Yaxis;
 int Zaxis;
 int voltage;
+int leftMotorCurrent;
+int rightMotorCurrent;
 
 void setup()
 {
@@ -36,18 +38,26 @@ void check_Trex_Sensors()
 	Yaxis=analogRead(A1);
 	Zaxis=analogRead(A2);
 	voltage=analogRead(A3);
+	leftMotorCurrent=analogRead(A6);
+	rightMotorCurrent=analogRead(A7);
 }
 
 void send_Sensor_Data()
 {
-	byte buffer[6];
+	byte buffer[12];
 	buffer[0]=Xaxis >> 8;
 	buffer[1]=Xaxis & 0xFF;
 	buffer[2]=Yaxis >> 8;
 	buffer[3]=Yaxis & 0xFF;
 	buffer[4]=Zaxis >> 8;
 	buffer[5]=Zaxis & 0xFF;
-	Wire.write(buffer,6);
+	buffer[6]=voltage >> 8;
+	buffer[7]=voltage & 0xFF;
+	buffer[8]=leftMotorCurrent >> 8;
+	buffer[9]=leftMotorCurrent & 0xFF;
+	buffer[10]=rightMotorCurrent >> 8;
+	buffer[11]=rightMotorCurrent & 0xFF;
+	Wire.write(buffer,12);
 }
 
 void loop()
