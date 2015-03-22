@@ -17,6 +17,7 @@ void setup()
 	check_I2C_address();
 	Wire.begin(I2Caddress);
 	Wire.onRequest(send_Sensor_Data);
+	Wire.onReceive(receive_Data);
 }
 
 void check_I2C_address()
@@ -58,6 +59,20 @@ void send_Sensor_Data()
 	buffer[10]=rightMotorCurrent >> 8;
 	buffer[11]=rightMotorCurrent & 0xFF;
 	Wire.write(buffer,12);
+}
+
+void receive_Data(int receiveDataBytes)
+{
+	byte startByte=0x0F;
+	byte x;
+	x=Wire.read();
+	if(x!=startByte){
+		Serial.print("ERROR");	
+		return;
+	}
+	else {
+		Serial.print(x);
+	}
 }
 
 void loop()
