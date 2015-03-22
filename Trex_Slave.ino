@@ -3,6 +3,10 @@
 #include<EEPROM.h>
 #include<Wire.h>
 
+#define leftMotorDirPin 2
+#define leftMotorPWMPin 3
+#define leftMotorBreakPin 4
+
 byte I2Caddress;
 int Xaxis;
 int Yaxis;
@@ -11,6 +15,7 @@ int voltage;
 int leftMotorCurrent;
 int rightMotorCurrent;
 
+
 void setup()
 {
 	Serial.begin(9600);
@@ -18,6 +23,10 @@ void setup()
 	Wire.begin(I2Caddress);
 	Wire.onRequest(send_Sensor_Data);
 	Wire.onReceive(receive_Data);
+	int m[]={2,3,4};
+	for(int i=0;i<3;i++){
+		pinMode(m[i],OUTPUT);
+	}
 }
 
 void check_I2C_address()
@@ -72,13 +81,16 @@ void receive_Data(int receiveDataBytes)
 	}
 	else {
 		byte leftMotorBreak=Wire.read();
+		digitalWrite(leftMotorBreakPin, leftMotorBreak);
 		byte leftMotorDirection=Wire.read();
+		digitalWrite(leftMotorDirPin,leftMotorDirection);
 		int leftMotorSpeed=Wire.read()<<8|Wire.read();
-		Serial.print(leftMotorBreak);
+		analogWrite(leftMotorPWMPin, abs(leftMotorSpeed));
+/*		Serial.print(leftMotorBreak);
 		Serial.print("\t");
 		Serial.print(leftMotorDirection);
 		Serial.print("\t");
-		Serial.println(leftMotorSpeed);	
+		Serial.println(leftMotorSpeed); */	
 	}
 }
 
