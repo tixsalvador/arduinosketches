@@ -4,7 +4,6 @@
 
 byte I2Caddress=0x07;
 byte dataAvailable;
-byte buffer[1];
 int dataSize=12;
 int Xaxis;
 int Yaxis;
@@ -17,8 +16,7 @@ void setup()
 {
 	Serial.begin(9600);
 	Wire.begin();
-	make_Forward_Data();
-	send_Forward_Data();
+	forward_Data();
 }
 
 void trex_Sensor_Values()
@@ -51,17 +49,22 @@ void trex_Sensor_Values()
 	}
 }
 
-void make_Forward_Data()
+void forward_Data()
 {
 	byte start=0x0F;
+	byte leftMotorBreak=0;
+	byte leftMotorDir=1;
+	int leftMotorSpeed=255;
+	byte buffer[5];
 	buffer[0]=start;
-}
-
-void send_Forward_Data()
-{
+	buffer[1]=leftMotorBreak;
+	buffer[2]=leftMotorDir;
+	buffer[3]=leftMotorSpeed >> 8;
+	buffer[4]=leftMotorSpeed & 0xFF;	
 	Wire.beginTransmission(I2Caddress);
-		Wire.write(buffer,1);
-	Wire.endTransmission();
+                Wire.write(buffer,5);
+        Wire.endTransmission();
+	
 }
 
 void loop()
