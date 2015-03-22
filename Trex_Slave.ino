@@ -66,12 +66,19 @@ void receive_Data(int receiveDataBytes)
 	byte startByte=0x0F;
 	byte x;
 	x=Wire.read();
-	if(x!=startByte){
-		Serial.print("ERROR");	
+	if(x!=startByte || receiveDataBytes!=5){
+		Serial.print("ERROR: Invalid startByte | data size");	
 		return;
 	}
 	else {
-		Serial.print(x);
+		byte leftMotorBreak=Wire.read();
+		byte leftMotorDirection=Wire.read();
+		int leftMotorSpeed=Wire.read()<<8|Wire.read();
+		Serial.print(leftMotorBreak);
+		Serial.print("\t");
+		Serial.print(leftMotorDirection);
+		Serial.print("\t");
+		Serial.println(leftMotorSpeed);	
 	}
 }
 
