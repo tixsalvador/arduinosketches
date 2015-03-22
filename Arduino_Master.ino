@@ -2,7 +2,9 @@
 
 #include<Wire.h>
 
+byte I2Caddress=0x07;
 byte dataAvailable;
+byte buffer[1];
 int dataSize=12;
 int Xaxis;
 int Yaxis;
@@ -15,6 +17,8 @@ void setup()
 {
 	Serial.begin(9600);
 	Wire.begin();
+	make_Forward_Data();
+	send_Forward_Data();
 }
 
 void trex_Sensor_Values()
@@ -30,7 +34,7 @@ void trex_Sensor_Values()
 		leftMotorCurrent=((leftMotorCurrent-511)*48.83)/1000;
 		rightMotorCurrent=Wire.read()<<8|Wire.read();
 		rightMotorCurrent=((rightMotorCurrent-511)*48.83)/1000;
-		Serial.print(Xaxis);
+/*		Serial.print(Xaxis);
 		Serial.print("\t");
 		Serial.print(Yaxis);
 		Serial.print("\t");
@@ -40,15 +44,27 @@ void trex_Sensor_Values()
 		Serial.print("\t");
 		Serial.print(leftMotorCurrent);
 		Serial.print("\t");
-		Serial.println(rightMotorCurrent);
+		Serial.println(rightMotorCurrent); */
 	}
 	else {
 		Serial.println("ERROR");
 	}
 }
 
+void make_Forward_Data()
+{
+	byte start=0x0F;
+	buffer[0]=start;
+}
+
+void send_Forward_Data()
+{
+	Wire.beginTransmission(I2Caddress);
+		Wire.write(buffer,1);
+	Wire.endTransmission();
+}
+
 void loop()
 {
 	delay(100);
-	trex_Sensor_Values();
 }
