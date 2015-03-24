@@ -55,14 +55,21 @@ void forward_Data()
 	byte leftMotorBreak=0;
 	byte leftMotorDir=1;
 	int leftMotorSpeed=255;
-	byte buffer[5];
+	byte rightMotorBreak=0;
+	byte rightMotorDir=1;
+	int rightMotorSpeed=255;
+	byte buffer[9];
 	buffer[0]=start;
 	buffer[1]=leftMotorBreak;
 	buffer[2]=leftMotorDir;
 	buffer[3]=leftMotorSpeed >> 8;
 	buffer[4]=leftMotorSpeed & 0xFF;	
+	buffer[5]=rightMotorBreak;
+	buffer[6]=rightMotorDir=1;
+	buffer[7]=rightMotorSpeed >> 8;
+	buffer[8]=rightMotorSpeed & 0xFF;
 	Wire.beginTransmission(I2Caddress);
-                Wire.write(buffer,5);
+                Wire.write(buffer,9);
         Wire.endTransmission();
 	
 }
