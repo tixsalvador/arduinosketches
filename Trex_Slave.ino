@@ -7,6 +7,10 @@
 #define leftMotorPWMPin 3
 #define leftMotorBreakPin 4
 
+#define rightMotorBreakPin 9
+#define rightMotorDirPin 10
+#define rightMotorPWMPin 11
+
 byte I2Caddress;
 int Xaxis;
 int Yaxis;
@@ -23,8 +27,8 @@ void setup()
 	Wire.begin(I2Caddress);
 	Wire.onRequest(send_Sensor_Data);
 	Wire.onReceive(receive_Data);
-	int m[]={2,3,4};
-	for(int i=0;i<3;i++){
+	int m[]={2,3,4,9,10,11};
+	for(int i=0;i<6;i++){
 		pinMode(m[i],OUTPUT);
 	}
 }
@@ -75,7 +79,7 @@ void receive_Data(int receiveDataBytes)
 	byte startByte=0x0F;
 	byte x;
 	x=Wire.read();
-	if(x!=startByte || receiveDataBytes!=5){
+	if(x!=startByte || receiveDataBytes!=9){
 		Serial.print("ERROR: Invalid startByte | data size");	
 		return;
 	}
@@ -86,11 +90,25 @@ void receive_Data(int receiveDataBytes)
 		digitalWrite(leftMotorDirPin,leftMotorDirection);
 		int leftMotorSpeed=Wire.read()<<8|Wire.read();
 		analogWrite(leftMotorPWMPin, abs(leftMotorSpeed));
+		byte rightMotorBreak=Wire.read();
+		digitalWrite(rightMotorBreakPin,rightMotorBreak);
+		byte rightMotorDirection=Wire.read();
+		digitalWrite(rightMotorDirPin, rightMotorDirection);
+		int rightMotorSpeed=Wire.read()<<8|Wire.read();
+		analogWrite(rightMotorPWMPin,abs(rightMotorSpeed));
+
 /*		Serial.print(leftMotorBreak);
 		Serial.print("\t");
 		Serial.print(leftMotorDirection);
 		Serial.print("\t");
-		Serial.println(leftMotorSpeed); */	
+		Serial.print(leftMotorSpeed); 
+		Serial.print("\t");	
+		Serial.print(rightMotorBreak);
+                Serial.print("\t");
+                Serial.print(rightMotorDirection);
+                Serial.print("\t");
+                Serial.println(rightMotorSpeed);
+*/
 	}
 }
 
