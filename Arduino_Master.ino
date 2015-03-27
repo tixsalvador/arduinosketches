@@ -1,6 +1,6 @@
 //Arduino MASTER
 
-#include<Wire.h>
+#include <Wire.h>
 
 byte I2Caddress=0x07;
 byte dataAvailable;
