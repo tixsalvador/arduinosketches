@@ -1,7 +1,7 @@
 //TREX SLAVE
 
-#include<EEPROM.h>
-#include<Wire.h>
+#include <EEPROM.h>
+#include <Wire.h>
 
 #define leftMotorDirPin 2
 #define leftMotorPWMPin 3
