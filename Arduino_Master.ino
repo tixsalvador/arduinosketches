@@ -12,11 +12,24 @@ float voltage;
 float leftMotorCurrent;
 float rightMotorCurrent;
 
+byte start;
+byte buffer[9];
+
+byte leftMotorBreak;
+byte leftMotorDir;
+int leftMotorSpeed;
+
+byte rightMotorBreak;
+byte rightMotorDir;
+int rightMotorSpeed;
+
+unsigned int lSpeed=255;
+unsigned int rSpeed=255;
+
 void setup()
 {
 	Serial.begin(9600);
 	Wire.begin();
-	forward_Data();
 }
 
 void trex_Sensor_Values()
@@ -49,23 +62,77 @@ void trex_Sensor_Values()
 	}
 }
 
-void forward_Data()
+void stop()
 {
-	byte start=0x0F;
-	byte leftMotorBreak=0;
-	byte leftMotorDir=1;
-	int leftMotorSpeed=255;
-	byte rightMotorBreak=0;
-	byte rightMotorDir=1;
-	int rightMotorSpeed=255;
-	byte buffer[9];
+	leftMotorBreak=1;
+        rightMotorBreak=1;
+        leftMotorDir=1;
+        rightMotorDir=1;
+        leftMotorSpeed=0;
+        rightMotorSpeed=0;
+        trex_Send_Data();
+}
+
+void forward()
+{
+	leftMotorBreak=0;
+	rightMotorBreak=0;
+	leftMotorDir=1;
+	rightMotorDir=1;
+	leftMotorSpeed=lSpeed;
+	rightMotorSpeed=rSpeed;
+	trex_Send_Data();
+	
+}
+
+
+void backward()
+{
+        leftMotorBreak=0;
+        rightMotorBreak=0;
+        leftMotorDir=0;
+        rightMotorDir=0;
+        leftMotorSpeed=lSpeed;
+        rightMotorSpeed=rSpeed;
+        trex_Send_Data();
+
+}
+
+void left()
+{
+        leftMotorBreak=0;
+        rightMotorBreak=0;
+        leftMotorDir=0;
+        rightMotorDir=1;
+        leftMotorSpeed=lSpeed;
+        rightMotorSpeed=rSpeed;
+        trex_Send_Data();
+
+}
+
+void right()
+{
+        leftMotorBreak=0;
+        rightMotorBreak=0;
+        leftMotorDir=1;
+        rightMotorDir=0;
+        leftMotorSpeed=lSpeed;
+        rightMotorSpeed=rSpeed;
+        trex_Send_Data();
+
+}
+
+
+void trex_Send_Data()
+{
+	start=0x0F;
 	buffer[0]=start;
 	buffer[1]=leftMotorBreak;
 	buffer[2]=leftMotorDir;
 	buffer[3]=leftMotorSpeed >> 8;
 	buffer[4]=leftMotorSpeed & 0xFF;	
 	buffer[5]=rightMotorBreak;
-	buffer[6]=rightMotorDir=1;
+	buffer[6]=rightMotorDir;
 	buffer[7]=rightMotorSpeed >> 8;
 	buffer[8]=rightMotorSpeed & 0xFF;
 	Wire.beginTransmission(I2Caddress);
@@ -77,4 +144,16 @@ void forward_Data()
 void loop()
 {
 	delay(100);
+	forward();
+	delay(10000);
+	stop();
+	delay(10000);
+	backward();
+	delay(10000);
+	left();
+	delay(10000);
+	right();
+	delay(10000);
+
+
 }
