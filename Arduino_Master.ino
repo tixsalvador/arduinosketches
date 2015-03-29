@@ -73,7 +73,7 @@ void stop()
         trex_Send_Data();
 }
 
-void forward()
+void backward()
 {
 	leftMotorBreak=0;
 	rightMotorBreak=0;
@@ -86,24 +86,12 @@ void forward()
 }
 
 
-void backward()
+void forward()
 {
         leftMotorBreak=0;
         rightMotorBreak=0;
         leftMotorDir=0;
         rightMotorDir=0;
-        leftMotorSpeed=lSpeed;
-        rightMotorSpeed=rSpeed;
-        trex_Send_Data();
-
-}
-
-void left()
-{
-        leftMotorBreak=0;
-        rightMotorBreak=0;
-        leftMotorDir=0;
-        rightMotorDir=1;
         leftMotorSpeed=lSpeed;
         rightMotorSpeed=rSpeed;
         trex_Send_Data();
@@ -114,10 +102,22 @@ void right()
 {
         leftMotorBreak=0;
         rightMotorBreak=0;
+        leftMotorDir=0;
+        rightMotorDir=1;
+        leftMotorSpeed=150;
+        rightMotorSpeed=150;
+        trex_Send_Data();
+
+}
+
+void left()
+{
+        leftMotorBreak=0;
+        rightMotorBreak=0;
         leftMotorDir=1;
         rightMotorDir=0;
-        leftMotorSpeed=lSpeed;
-        rightMotorSpeed=rSpeed;
+        leftMotorSpeed=150;
+        rightMotorSpeed=150;
         trex_Send_Data();
 
 }
@@ -144,16 +144,22 @@ void trex_Send_Data()
 void loop()
 {
 	delay(100);
-	forward();
-	delay(10000);
-	stop();
-	delay(10000);
-	backward();
-	delay(10000);
-	left();
-	delay(10000);
-	right();
-	delay(10000);
-
-
+	if(Serial.available()>0){
+		char x=Serial.read();
+		if(x=='w'){
+			forward();
+		}
+		else if(x=='s'){
+			backward();
+		}
+		else if(x=='a'){
+			left();
+		}
+		else if(x=='d'){
+			right();
+		}
+		else {
+			stop();
+		}
+	}
 }
