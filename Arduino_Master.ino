@@ -26,6 +26,8 @@ int rightMotorSpeed;
 unsigned int lSpeed=255;
 unsigned int rSpeed=255;
 
+unsigned long previous_Time=0;
+
 void setup()
 {
 	Serial.begin(9600);
@@ -141,10 +143,8 @@ void trex_Send_Data()
 	
 }
 
-void loop()
+void xBee_Control()
 {
-	delay(100);
-	if(Serial.available()>0){
 		char x=Serial.read();
 		if(x=='w'){
 			forward();
@@ -160,6 +160,21 @@ void loop()
 		}
 		else {
 			stop();
+		}
+}
+
+void loop()
+{
+	delay(100);
+	trex_Sensor_Values();
+	while(voltage > 6.50){
+		unsigned int timeDelay=5000;
+		if(millis()-previous_Time>=timeDelay){
+			trex_Sensor_Values();
+			previous_Time=millis();
+		}
+		if(Serial.available()>0){
+			xBee_Control();
 		}
 	}
 }
