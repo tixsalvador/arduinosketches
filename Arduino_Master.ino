@@ -1,6 +1,16 @@
 //Arduino MASTER
 
 #include <Wire.h>
+#include <SoftwareSerial.h>
+#include <TinyGPS++.h>
+#include <SD.h>
+
+SoftwareSerial sS(2,3);
+TinyGPSPlus gps;
+
+File myFile;
+
+const int sdCard=10;
 
 byte I2Caddress=0x07;
 byte dataAvailable;
@@ -31,7 +41,68 @@ unsigned long previous_Time=0;
 void setup()
 {
 	Serial.begin(9600);
+	sS.begin(9600);
 	Wire.begin();
+	pinMode(6,OUTPUT);
+	pinMode(10,OUTPUT);
+	digitalWrite(6,LOW);
+	check_SDCard();
+}
+
+void check_SDCard()
+{
+	if(!SD.begin(sdCard)){
+		Serial.println("Card not Present");
+		return;
+	}
+	if(!SD.exists("gpsLog.txt")){
+		myFile=SD.open("gpsLog.txt",FILE_WRITE);
+		myFile.close();
+		Serial.println("Created File");
+	}
+	myFile=SD.open("gpsLog.txt",FILE_WRITE);
+	if(myFile){
+		if(myFile.size()>1000000){
+			SD.remove("gpsLog.txt");
+			myFile=SD.open("gpsLog.txt",FILE_WRITE);
+			myFile.close();
+		}
+	}
+}
+
+
+void gps_Stats()
+{
+	while(sS.available()>0){
+		gps.encode(sS.read());
+		if(gps.location.isUpdated()){
+			myFile=SD.open("gpsLog.txt",FILE_WRITE);
+			if(myFile){
+				myFile.print(gps.date.value());
+				myFile.print(", ");
+				myFile.print(gps.time.value());
+				myFile.print(", ");
+				myFile.print(gps.altitude.value());
+				myFile.print(", ");
+				myFile.print(gps.speed.mps());
+				myFile.print(", ");
+				myFile.print(gps.location.lat());
+				myFile.print(", ");
+				myFile.print(gps.location.lng());
+				myFile.print(", ");
+				myFile.println(gps.satellites.value());
+				myFile.close();
+			}
+		}
+/*
+		myFile=SD.open("gpsLog.txt");
+		if(myFile){
+			while(myFile.available()){
+				Serial.write(myFile.read());
+			}myFile.close();
+		}
+*/
+	}
 }
 
 void trex_Sensor_Values()
@@ -166,7 +237,8 @@ void xBee_Control()
 void loop()
 {
 	delay(100);
-	trex_Sensor_Values();
+//	trex_Sensor_Values();
+	gps_Stats();
 	while(voltage > 6.50){
 		unsigned int timeDelay=5000;
 		if(millis()-previous_Time>=timeDelay){
