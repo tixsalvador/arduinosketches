@@ -1,6 +1,7 @@
 //Arduino MASTER_MANUAL
 
 #include <Wire.h>
+#include <math.h>
 
 byte I2Caddress=0x07;
 byte dataAvailable;
@@ -11,6 +12,8 @@ int Zaxis;
 float voltage;
 float leftMotorCurrent;
 float rightMotorCurrent;
+
+double x,y,z;
 
 byte start;
 byte buffer[9];
@@ -47,6 +50,7 @@ void trex_Sensor_Values()
 		leftMotorCurrent=((leftMotorCurrent-511)*48.83)/1000;
 		rightMotorCurrent=Wire.read()<<8|Wire.read();
 		rightMotorCurrent=((rightMotorCurrent-511)*48.83)/1000;
+/*
 		Serial.print(Xaxis);
 		Serial.print("\t");
 		Serial.print(Yaxis);
@@ -58,6 +62,7 @@ void trex_Sensor_Values()
 		Serial.print(leftMotorCurrent);
 		Serial.print("\t");
 		Serial.println(rightMotorCurrent);
+*/
 	}
 	else {
 		Serial.println("ERROR");
@@ -163,10 +168,29 @@ void xBee_Control()
 		}
 }
 
+void check_angle()
+{
+	int min=529;
+	int max=724;
+	int xAng=map(Xaxis,min,max,-90,90);
+	int yAng=map(Yaxis,min,max,-90,90);
+	int zAng=map(Zaxis,min,max,-90,90);
+	x = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
+  	y = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
+ 	z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
+	Serial.print("x: ");
+  	Serial.print(x);
+	Serial.print(" | y: ");
+  	Serial.print(y);
+  	Serial.print(" | z: ");
+  	Serial.println(z);
+}
+
 void loop()
 {
 	delay(100);
 	trex_Sensor_Values();
+	check_angle();
 	while(voltage > 6.50){
 		unsigned int timeDelay=1000;
 		if(millis()-previous_Time>=timeDelay){
