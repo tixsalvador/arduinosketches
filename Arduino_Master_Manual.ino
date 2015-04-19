@@ -29,6 +29,7 @@ int rightMotorSpeed;
 unsigned int lSpeed=255;
 unsigned int rSpeed=255;
 
+byte alternate;
 unsigned long previous_Time=0;
 
 void setup()
@@ -168,7 +169,7 @@ void xBee_Control()
 		}
 }
 
-void check_angle()
+void check_angle_magnitude()
 {
 	int min=529;
 	int max=724;
@@ -178,6 +179,7 @@ void check_angle()
 	x = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
   	y = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
  	z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
+	
 	Serial.print("x: ");
   	Serial.print(x);
 	Serial.print(" | y: ");
@@ -190,12 +192,17 @@ void loop()
 {
 	delay(100);
 	trex_Sensor_Values();
-	check_angle();
 	while(voltage > 6.50){
-		unsigned int timeDelay=1000;
+		unsigned int timeDelay=500;
 		if(millis()-previous_Time>=timeDelay){
-			trex_Sensor_Values();
+			alternate=alternate^1;
 			previous_Time=millis();
+			if(alternate){
+				trex_Sensor_Values();
+			}
+			else{
+				check_angle_magnitude();	
+			}
 		}
 		if(Serial.available()>0){
 			xBee_Control();
