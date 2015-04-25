@@ -8,7 +8,7 @@ TinyGPS gps;
 float latitude,longitude;
 int year;
 byte month,day,hour,minutes,second,hundredths;
-byte buffer[4];
+byte buffer[8];
 
 void setup()
 {
@@ -16,7 +16,7 @@ void setup()
 	sS.begin(9600);
 	pinMode(6,OUTPUT);
 	digitalWrite(6,LOW);
-	Wire.begin(7);
+	Wire.begin(2);
 	Wire.onRequest(get_GPS_Data);
 }
 
@@ -30,9 +30,9 @@ void gps_Data()
 
 			gps.f_get_position(&latitude,&longitude);
 			Serial.print(latitude,8);
-                        Serial.print("\t");
-                        Serial.print(longitude,8);
-                        Serial.print("\t");
+            Serial.print("\t");
+            Serial.print(longitude,8);
+            Serial.print("\t");
 			Serial.print(year);
 			Serial.print("\t");
 			Serial.print(month);
@@ -53,16 +53,29 @@ void get_GPS_Data()
 {
 	union lat2bytes
 	{
-		float f;
-		byte b[sizeof(float)];
+		float latf;
+		byte latb[sizeof(float)];
 	};
 	lat2bytes la2b;
-	la2b.f=latitude;
-	buffer[0]=la2b.b[0];
-	buffer[1]=la2b.b[1];
-	buffer[2]=la2b.b[2];
-	buffer[3]=la2b.b[3];
-	Wire.write(buffer,4);
+	la2b.latf=latitude;
+	buffer[0]=la2b.latb[0];
+	buffer[1]=la2b.latb[1];
+	buffer[2]=la2b.latb[2];
+	buffer[3]=la2b.latb[3];
+	
+	union lon2bytes
+	{
+		float lonf;
+		byte lonb[sizeof(float)];
+	};
+	lon2bytes lo2b;
+	lo2b.lonf=longitude;
+	buffer[4]=lo2b.lonb[0];
+	buffer[5]=lo2b.lonb[1];
+	buffer[6]=lo2b.lonb[2];
+	buffer[7]=lo2b.lonb[3];
+	
+	Wire.write(buffer,8);
 }
 
 void loop()
