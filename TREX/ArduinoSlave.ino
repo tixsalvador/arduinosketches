@@ -36,6 +36,11 @@ void check_SD_Card()
 		myFile.close();
 		Serial.println("Created new file");
 	}
+	else {
+		myFile=SD.open("gpsLog.txt",FILE_WRITE);
+		myFile.println("---------------------------------");
+		myFile.close();
+	}
 }
 
 
