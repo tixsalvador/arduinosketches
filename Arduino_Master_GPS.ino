@@ -30,7 +30,9 @@ unsigned int lSpeed=255;
 unsigned int rSpeed=255;
 
 byte alternate;
-unsigned long previous_Time=0;
+unsigned long previous_Time_Data=0;
+
+unsigned long previous_Time_Xbee=0;
 
 union lat2bytes
 {
@@ -166,22 +168,24 @@ void trex_Send_Data()
 
 void xBee_Control()
 {
-		char x=Serial.read();
-		if(x=='w'){
+	char x=Serial.read();
+	switch(x){
+		case 'w':
 			forward();
-		}
-		else if(x=='s'){
+			break;
+		case 's':
 			backward();
-		}
-		else if(x=='a'){
+			break;
+		case 'a':
 			left();
-		}
-		else if(x=='d'){
+			break;
+		case 'd':
 			right();
-		}
-		else {
+			break;
+		default:
 			stop();
-		}
+			break;
+	}
 }
 
 void check_angle_magnitude()
@@ -194,14 +198,14 @@ void check_angle_magnitude()
 	x = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
   	y = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
  	z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
-	
+/*	
 	Serial.print("x: ");
   	Serial.print(x);
 	Serial.print(" | y: ");
   	Serial.print(y);
   	Serial.print(" | z: ");
   	Serial.println(z);
-
+*/
 }
 
 void get_GPS_data()
@@ -233,9 +237,9 @@ void loop()
 	trex_Sensor_Values();
 	while(voltage > 6.50){
 		unsigned int timeDelay=500;
-		if(millis()-previous_Time>=timeDelay){
+		if(millis()-previous_Time_Data>=timeDelay){
 			alternate=alternate^1;
-			previous_Time=millis();
+			previous_Time_Data=millis();
 			if(alternate){
 				trex_Sensor_Values();
 				check_angle_magnitude();
@@ -247,5 +251,5 @@ void loop()
 		if(Serial.available()>0){
 			xBee_Control();
 		}
-	}
+	} Serial.println("Battery charge low");
 }
