@@ -1,13 +1,16 @@
 #include <TinyGPS.h>
 #include <SoftwareSerial.h>
 #include <Wire.h>
+#include <SD.h>
 
 SoftwareSerial sS(2,3);
 TinyGPS gps;
 
-float latitude,longitude;
-int year;
-byte month,day,hour,minutes,second,hundredths;
+File myFile;
+
+float latitude,longitude,altitude,course,speed_mps;
+unsigned long time,date;
+
 byte buffer[8];
 
 void setup()
@@ -15,10 +18,26 @@ void setup()
 	Serial.begin(9600);
 	sS.begin(9600);
 	pinMode(6,OUTPUT);
+	pinMode(10,OUTPUT);
 	digitalWrite(6,LOW);
+	check_SD_Card();
 	Wire.begin(2);
 	Wire.onRequest(get_GPS_Data);
 }
+
+void check_SD_Card()
+{
+	if(!SD.begin(10)){
+		Serial.println("Failed to initialize card");
+		return;
+	}
+	if(!SD.exists("gpsLog.txt")){
+		myFile=SD.open("gpsLog.txt",FILE_WRITE);
+		myFile.close();
+		Serial.println("Created new file");
+	}
+}
+
 
 void gps_Data()
 {
@@ -26,25 +45,40 @@ void gps_Data()
 	if(sS.available()>0){
 		a=sS.read();
 		if(gps.encode(a)){
-			gps.crack_datetime(&year,&month,&day,&hour,&minutes,&second,&hundredths);
-
+			gps.get_datetime(&date,&time);
 			gps.f_get_position(&latitude,&longitude);
+			altitude=gps.f_altitude();
+			course=gps.f_course();
+			myFile=SD.open("gpsLog.txt",FILE_WRITE);
+			if(myFile){
+				myFile.print(date);
+				myFile.print(", ");
+				myFile.print(time);
+				myFile.print(", ");
+				myFile.print(latitude,8);
+				myFile.print(", ");
+				myFile.print(longitude,8);
+				myFile.print(", ");
+				myFile.print(altitude);
+				myFile.print(", ");
+				myFile.print(course);
+				myFile.print(", ");
+				myFile.println(speed_mps);
+				myFile.close();
+			}
+			Serial.print(date);
+			Serial.print("\t");
+			Serial.print(time);
+			Serial.print("\t");
 			Serial.print(latitude,8);
             Serial.print("\t");
             Serial.print(longitude,8);
             Serial.print("\t");
-			Serial.print(year);
-			Serial.print("\t");
-			Serial.print(month);
-			Serial.print("\t");
-			Serial.print(day);
-                        Serial.print("\t");
-                        Serial.print(hour);
-			Serial.print("\t");
-                        Serial.print(minutes);
-                        Serial.print("\t");
-                        Serial.println(second);
-			
+            Serial.print(altitude);
+            Serial.print("\t");
+            Serial.print(course);
+            Serial.print("\t");
+            Serial.println(speed_mps);
 		}
 	}
 }
@@ -82,3 +116,4 @@ void loop()
 {
 	gps_Data();
 }
+
