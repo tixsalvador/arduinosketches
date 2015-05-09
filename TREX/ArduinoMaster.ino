@@ -2,6 +2,9 @@
 
 #include <Wire.h>
 #include <math.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27,20,4);
 
 byte I2Caddress=0x07;
 byte dataAvailable;
@@ -53,6 +56,9 @@ void setup()
 {
 	Serial.begin(9600);
 	Wire.begin();
+	lcd.init();
+	lcd.init();
+	lcd.backlight();
 }
 
 void trex_Sensor_Values()
@@ -87,67 +93,6 @@ void trex_Sensor_Values()
 	}
 }
 
-void stop()
-{
-	leftMotorBreak=1;
-        rightMotorBreak=1;
-        leftMotorDir=1;
-        rightMotorDir=1;
-        leftMotorSpeed=0;
-        rightMotorSpeed=0;
-        trex_Send_Data();
-}
-
-void backward()
-{
-	leftMotorBreak=0;
-	rightMotorBreak=0;
-	leftMotorDir=1;
-	rightMotorDir=1;
-	leftMotorSpeed=lSpeed;
-	rightMotorSpeed=rSpeed;
-	trex_Send_Data();
-	
-}
-
-
-void forward()
-{
-        leftMotorBreak=0;
-        rightMotorBreak=0;
-        leftMotorDir=0;
-        rightMotorDir=0;
-        leftMotorSpeed=lSpeed;
-        rightMotorSpeed=rSpeed;
-        trex_Send_Data();
-
-}
-
-void right()
-{
-        leftMotorBreak=0;
-        rightMotorBreak=0;
-        leftMotorDir=0;
-        rightMotorDir=1;
-        leftMotorSpeed=150;
-        rightMotorSpeed=150;
-        trex_Send_Data();
-
-}
-
-void left()
-{
-        leftMotorBreak=0;
-        rightMotorBreak=0;
-        leftMotorDir=1;
-        rightMotorDir=0;
-        leftMotorSpeed=150;
-        rightMotorSpeed=150;
-        trex_Send_Data();
-
-}
-
-
 void trex_Send_Data()
 {
 	start=0x0F;
@@ -169,23 +114,9 @@ void trex_Send_Data()
 void xBee_Control()
 {
 	char x=Serial.read();
-	switch(x){
-		case 'w':
-			forward();
-			break;
-		case 's':
-			backward();
-			break;
-		case 'a':
-			left();
-			break;
-		case 'd':
-			right();
-			break;
-		default:
-			stop();
-			break;
-	}
+	Wire.beginTransmission(I2Caddress);
+    Wire.write(x);
+    Wire.endTransmission();
 }
 
 void check_angle_magnitude()
@@ -212,7 +143,7 @@ void get_GPS_data()
 {
 	lat2bytes la2b;
 	lon2bytes lo2b;
-	Wire.requestFrom(2,8);
+	Wire.requestFrom(6,8);
 	while(Wire.available())
 	{
 		la2b.latb[0]=Wire.read();
@@ -229,6 +160,34 @@ void get_GPS_data()
 	Serial.print(latitude,6);
 	Serial.print("\t");
 	Serial.println(longitude,6);
+}
+
+void lcd_Gps_Angle()
+{
+	lcd.setCursor(0,0);
+        lcd.print("Latitude:");
+        lcd.setCursor(9,0);
+        lcd.print(latitude,6);
+        lcd.setCursor(0,1);
+        lcd.print("Longitude:");
+        lcd.setCursor(10,1);
+        lcd.print(longitude,6);
+	lcd.setCursor(0,2);
+	lcd.print("x:");
+	lcd.setCursor(2,2);
+	lcd.print(x);
+	lcd.setCursor(11,2);
+	lcd.print("y:");
+	lcd.setCursor(13,2);
+	lcd.print(y);
+	lcd.setCursor(0,3);
+	lcd.print("z:");
+	lcd.setCursor(2,3);
+	lcd.print(y);
+	lcd.setCursor(11,3);
+	lcd.print("V:");
+	lcd.setCursor(13,3);
+	lcd.print(voltage);
 }
 
 void loop()
@@ -251,5 +210,6 @@ void loop()
 		if(Serial.available()>0){
 			xBee_Control();
 		}
+		lcd_Gps_Angle();
 	} Serial.println("Battery charge low");
 }
