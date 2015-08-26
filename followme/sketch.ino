@@ -1,6 +1,7 @@
 //Follow me script
 //Clean up
-//Last edited: Aug 21 2015
+//Last edited: Aug 25 2015
+
 
 #include <Wire.h>
 #include <math.h>
@@ -10,7 +11,7 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 byte I2Caddress = 0x07;
 byte dataAvailable;
-int dataSize = 12;
+const int dataSize = 12;
 int Xaxis;
 int Yaxis;
 int Zaxis;
@@ -22,13 +23,19 @@ double x, y, z;
 
 byte alternate;
 
-int sonar1=0;
-
-int leftMotorSpeed=100;
-int rightMotorSpeed=100;
+unsigned int leftMotorSpeed=100;
+unsigned int rightMotorSpeed=100;
 
 unsigned long previous_Time_Data = 0;
 unsigned long previous_Time_Xbee = 0;
+
+
+int sonar1=0;
+int sonar2=0;
+const int forwardMaxDistance=40;
+const int forwardMinDistance=16;
+const int backwardMaxDistance=10;
+const int backwardMinDistance=2;
 
 void setup()
 {
@@ -72,9 +79,6 @@ void xBee_Control()
 	Wire.write(buffer,5);
 	Wire.endTransmission();
 }
-
-
-
 
 void forward()
 {
@@ -133,9 +137,7 @@ void check_angle_magnitude()
 void show_lcd_data()
 {
 	lcd.setCursor(0, 0);
-	lcd.print("V:");
-	lcd.setCursor(2, 0);
-	lcd.print(voltage);
+	lcd.print(sonar1_data());
 }
 
 int sonar1_data()
@@ -151,20 +153,34 @@ int sonar1_data()
 	return sonar1;
 }
 
-void loop()
+int sonar2_data()
 {
-	Serial.println(sonar1_data());
-	if((sonar1_data()>=16)&&(sonar1_data()<=40)){
+	int sonarB[10];
+	for(int i=0;i<9;i++){
+			sonarB[i]=analogRead(A1);
+			delayMicroseconds(10);
+			sonarB[i]=(sonarB[i]/2)+2;
+			sonar2=sonar2+sonarB[i];
+	}
+	sonar2=sonar2/10;
+	return sonar2;
+}
+
+void loop()
+{	
+	show_lcd_data();
+	Serial.print(sonar1_data());
+	Serial.print("	");
+	Serial.println(sonar2_data());
+	
+	if((sonar1_data()>=forwardMinDistance)&&(sonar1_data()<=forwardMaxDistance)){
 		forward();
 	}
-	else if((sonar1_data()<=10)&&(sonar1_data()>=2)){
+	else if((sonar1_data()<=backwardMaxDistance)&&(sonar1_data()>=backwardMinDistance)){
 		backward();
 	}
 	else {
 		stop();
 	}
-	
-	if(Serial.available()>0){
-		xBee_Control();
-	}
 }
+
