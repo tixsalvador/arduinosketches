@@ -32,9 +32,9 @@ unsigned long previous_Time_Xbee = 0;
 
 int sonar1=0;
 int sonar2=0;
-const int forwardMaxDistance=40;
+const int forwardMaxDistance=50;
 const int forwardMinDistance=16;
-const int backwardMaxDistance=10;
+const int backwardMaxDistance=15; //10 - Aug 26
 const int backwardMinDistance=2;
 
 void setup()
@@ -134,10 +134,11 @@ void check_angle_magnitude()
 	z = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
 }
 
+
 void show_lcd_data()
 {
-	lcd.setCursor(0, 0);
-	lcd.print(sonar1_data());
+	lcd.setCursor(6,0);
+	lcd.print("ROBORAT");
 }
 
 int sonar1_data()
@@ -168,15 +169,15 @@ int sonar2_data()
 
 void loop()
 {	
-	show_lcd_data();
 	Serial.print(sonar1_data());
 	Serial.print("	");
 	Serial.println(sonar2_data());
-	
-	if((sonar1_data()>=forwardMinDistance)&&(sonar1_data()<=forwardMaxDistance)){
+
+	show_lcd_data();	
+	if((sonar1_data()>=forwardMinDistance)&&(sonar1_data()<=forwardMaxDistance)&&(sonar2_data()>=forwardMinDistance)&&(sonar2_data()<=forwardMaxDistance)){
 		forward();
 	}
-	else if((sonar1_data()<=backwardMaxDistance)&&(sonar1_data()>=backwardMinDistance)){
+	else if((sonar1_data()<=backwardMaxDistance)&&(sonar1_data()>=backwardMinDistance)&&(sonar2_data()<=backwardMaxDistance)&&(sonar2_data()>=backwardMinDistance)){
 		backward();
 	}
 	else {
