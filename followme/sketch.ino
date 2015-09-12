@@ -224,7 +224,7 @@ int sonar_right()
 	return sonar2;
 }
 
-void loop()
+void where_na_u()
 {	
 	int left=0;
 	int right=0;
@@ -259,6 +259,12 @@ void loop()
 
 	lcd.setCursor(10,0);
 	lcd.print(direction);
+}
+
+void loop()
+{
+	where_na_u();
+}
  	/*	
 	if((sonar_left()>=forwardMinDistance)&&(sonar_left()<=forwardMaxDistance)&&(sonar_right()>=forwardMinDistance)&&(sonar_right()<=forwardMaxDistance)){
 		forward_normal();
@@ -281,5 +287,4 @@ void loop()
 	
 	show_lcd_data();
 	*/
-}
 
