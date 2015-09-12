@@ -39,6 +39,9 @@ const int backwardMaxDistance=15; //10 - Aug 26
 const int backwardMinDistance=2;
 const int calibrate=5;
 
+int sonar_average;
+int sonar_calibrate;
+
 byte direction;
 
 void setup()
@@ -223,22 +226,40 @@ int sonar_right()
 
 void loop()
 {	
+	int left=0;
+	int right=0;
+	int front=0;
+	for(int i=0;i<21;i++){
+		delayMicroseconds(500);
+		sonar_average=(sonar_left()+sonar_right())/2;
+		sonar_calibrate=sonar_average+calibrate;
 	
-	int sonar_average=(sonar_left()+sonar_right())/2;
-	int sonar_calibrate=sonar_average+calibrate;
+		if(sonar_left()>sonar_calibrate){
+			left=left+1;
+		}
+		else if(sonar_right()>sonar_calibrate){
+			right=right+1;
+		}
+		else 
+			front=front+1;
+	}
 	
-	
-	if(sonar_left()>sonar_calibrate){
+	if((left>right)&&(left>front)){
+		direction=1;
 		Serial.println("Left");
 	}
-	else if(sonar_right()>sonar_calibrate){
+	else if((right>left)&&(right>front)){
+		direction=2;
 		Serial.println("Right");
 	}
-	else 
+	else if((front>left)&&(front>right)){
+		direction=3;
 		Serial.println("Front");
-	
-	
-	/*
+	}
+
+	lcd.setCursor(10,0);
+	lcd.print(direction);
+ 	/*	
 	if((sonar_left()>=forwardMinDistance)&&(sonar_left()<=forwardMaxDistance)&&(sonar_right()>=forwardMinDistance)&&(sonar_right()<=forwardMaxDistance)){
 		forward_normal();
 	}
