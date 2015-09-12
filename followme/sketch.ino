@@ -22,8 +22,6 @@ float rightMotorCurrent;
 
 double x, y, z;
 
-byte alternate;
-
 unsigned int leftMotorSpeed;
 unsigned int rightMotorSpeed;
 
@@ -42,7 +40,7 @@ const int calibrate=5;
 int sonar_average;
 int sonar_calibrate;
 
-byte direction;
+int direction;
 
 void setup()
 {
@@ -121,9 +119,11 @@ void forward_speedUp()
 	Wire.endTransmission();
 }
 
-void left()
+void left_turn()
 {
 	char x='a';
+	leftMotorSpeed=120;
+        rightMotorSpeed=120;
 	byte buffer[5];
 	Wire.beginTransmission(I2Caddress);
 	buffer[0]=x;
@@ -135,9 +135,11 @@ void left()
 	Wire.endTransmission();
 }
 
-void right()
+void right_turn()
 {
 	char x='d';
+	leftMotorSpeed=120;
+        rightMotorSpeed=120;
 	byte buffer[5];
 	Wire.beginTransmission(I2Caddress);
 	buffer[0]=x;
@@ -196,6 +198,9 @@ void show_lcd_data()
 {
 	lcd.setCursor(6,0);
 	lcd.print("ROBORAT");
+	lcd.setCursor(10,1);
+	lcd.print(direction);
+	
 }
 
 int sonar_left()
@@ -246,26 +251,38 @@ void where_na_u()
 	
 	if((left>right)&&(left>front)){
 		direction=1;
-		Serial.println("Left");
 	}
 	else if((right>left)&&(right>front)){
 		direction=2;
-		Serial.println("Right");
 	}
 	else if((front>left)&&(front>right)){
 		direction=3;
-		Serial.println("Front");
 	}
-
+	
 	lcd.setCursor(10,0);
 	lcd.print(direction);
 }
 
 void loop()
 {
+	//direction 1=left; 2=right; 3=front
+	show_lcd_data();
 	where_na_u();
+	
+	if(direction==1){
+		left_turn();
+	}
+	else if(direction==2){
+		right_turn();
+	}
+	else {
+		stop();
+	}
+	
 }
- 	/*	
+	
+	/*
+		
 	if((sonar_left()>=forwardMinDistance)&&(sonar_left()<=forwardMaxDistance)&&(sonar_right()>=forwardMinDistance)&&(sonar_right()<=forwardMaxDistance)){
 		forward_normal();
 	}
