@@ -40,7 +40,7 @@ const int calibrate=5;
 int sonar_average;
 int sonar_calibrate;
 
-int direction;
+byte direction;
 
 void setup()
 {
@@ -106,8 +106,8 @@ void forward_normal()
 void forward_speedUp()
 {
 	char x='w';
-	leftMotorSpeed=255;
-	rightMotorSpeed=255;
+	leftMotorSpeed=220;
+	rightMotorSpeed=220;
 	byte buffer[5];
 	Wire.beginTransmission(I2Caddress);
 	buffer[0]=x;
@@ -277,6 +277,14 @@ void loop()
 	}
 	else if((direction==3)&&(sonar_left()<=15)&&(sonar_left()>=2)||(sonar_right()<=15)&&(sonar_right()>=2)){
 		backward();
+	}
+	else if((direction==3)&&(sonar_average>16)&&(sonar_average<=50)){
+		if(sonar_average>=35){
+			forward_speedUp();
+		}
+		else {
+			forward_normal();
+		}
 	}
 	else {
 		stop();
