@@ -269,15 +269,19 @@ void loop()
 	show_lcd_data();
 	where_na_u();
 	
-	if(direction==1){
+	if((direction==1)&&(sonar_average>=16)&&(sonar_average<=50)){
 		left_turn();
 	}
-	else if(direction==2){
+	else if((direction==2)&&(sonar_average>=16)&&(sonar_average<=50)){
 		right_turn();
+	}
+	else if((direction==3)&&(sonar_left()<=15)&&(sonar_left()>=2)||(sonar_right()<=15)&&(sonar_right()>=2)){
+		backward();
 	}
 	else {
 		stop();
 	}
+	Serial.println(sonar_average);
 	
 }
 	
@@ -304,4 +308,3 @@ void loop()
 	
 	show_lcd_data();
 	*/
-
