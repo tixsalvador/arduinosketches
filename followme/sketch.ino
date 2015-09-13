@@ -198,7 +198,9 @@ void show_lcd_data()
 {
 	lcd.setCursor(6,0);
 	lcd.print("ROBORAT");
-	lcd.setCursor(10,1);
+	lcd.setCursor(8,1);
+	lcd.print(voltage);
+	lcd.setCursor(10,2);
 	lcd.print(direction);
 	
 }
@@ -266,13 +268,14 @@ void where_na_u()
 void loop()
 {
 	//direction 1=left; 2=right; 3=front
+	trex_Sensor_Values();
 	show_lcd_data();
 	where_na_u();
 	
-	if((direction==1)&&(sonar_average>=16)&&(sonar_average<=50)){
+	if((direction==1)&&(sonar_average>=5)&&(sonar_average<=30)){
 		left_turn();
 	}
-	else if((direction==2)&&(sonar_average>=16)&&(sonar_average<=50)){
+	else if((direction==2)&&(sonar_average>=5)&&(sonar_average<=30)){
 		right_turn();
 	}
 	else if((direction==3)&&(sonar_left()<=15)&&(sonar_left()>=2)||(sonar_right()<=15)&&(sonar_right()>=2)){
