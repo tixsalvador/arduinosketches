@@ -196,13 +196,22 @@ void check_angle_magnitude()
 
 void show_lcd_data()
 {
-	lcd.setCursor(6,0);
-	lcd.print("ROBORAT");
-	lcd.setCursor(8,1);
+	lcd.setCursor(0,0);
+	lcd.print("Volt:");
+	lcd.setCursor(5,0);
 	lcd.print(voltage);
-	lcd.setCursor(10,2);
-	lcd.print(direction);
-	
+	lcd.setCursor(11,0);
+	lcd.print("Dir:");
+	lcd.setCursor(15,0);
+	if(direction==1){
+		lcd.print("Left");
+	}
+	else if(direction==2){
+		lcd.print("Right");
+	}
+	else if(direction==3){
+		lcd.print("Front");
+	}
 }
 
 int sonar_left()
@@ -253,6 +262,7 @@ void where_na_u()
 	
 	if((left>right)&&(left>front)){
 		direction=1;
+		
 	}
 	else if((right>left)&&(right>front)){
 		direction=2;
@@ -260,14 +270,10 @@ void where_na_u()
 	else if((front>left)&&(front>right)){
 		direction=3;
 	}
-	
-	lcd.setCursor(10,0);
-	lcd.print(direction);
 }
 
 void loop()
 {
-	//direction 1=left; 2=right; 3=front
 	trex_Sensor_Values();
 	show_lcd_data();
 	where_na_u();
@@ -281,7 +287,8 @@ void loop()
 	else if((direction==3)&&(sonar_left()<=15)&&(sonar_left()>=2)||(sonar_right()<=15)&&(sonar_right()>=2)){
 		backward();
 	}
-	else if((direction==3)&&(sonar_average>16)&&(sonar_average<=50)){
+	else if((direction==3)&&(sonar_left()>=20)&&(sonar_left()<=50)||(sonar_right()>=20)&&(sonar_right()<=50)){
+	// else if((direction==3)&&(sonar_average>20)&&(sonar_average<=50)){
 		if(sonar_average>=35){
 			forward_speedUp();
 		}
@@ -296,26 +303,4 @@ void loop()
 	
 }
 	
-	/*
-		
-	if((sonar_left()>=forwardMinDistance)&&(sonar_left()<=forwardMaxDistance)&&(sonar_right()>=forwardMinDistance)&&(sonar_right()<=forwardMaxDistance)){
-		forward_normal();
-	}
-	else if((sonar_left()<=backwardMaxDistance)&&(sonar_left()>=backwardMinDistance)||(sonar_right()<=backwardMaxDistance)&&(sonar_right()>=backwardMinDistance)){
-		backward();
-	}
-	else {
-		stop();
-	}
 	
-	
-	Serial.print(sonar_left());
-	Serial.print("	");
-	Serial.print(sonar_right());
-	Serial.print("	");
-	Serial.print(sonar_average);
-	Serial.print("	");
-	Serial.println(sonar_calibrate);
-	
-	show_lcd_data();
-	*/
