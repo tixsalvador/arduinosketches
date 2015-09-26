@@ -10,6 +10,8 @@
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
+#define interruptPin 2
+
 byte I2Caddress = 0x07;
 byte dataAvailable;
 const int dataSize = 12;
@@ -31,12 +33,8 @@ unsigned long previous_Time_Xbee = 0;
 
 int sonar1=0;
 int sonar2=0;
-const int forwardMaxDistance=50;
-const int forwardMinDistance=16;
-const int backwardMaxDistance=15; //10 - Aug 26
-const int backwardMinDistance=2;
-const int calibrate=5;
 
+const int calibrate=5;
 int sonar_average;
 int sonar_calibrate;
 
@@ -48,6 +46,8 @@ void setup()
 	Wire.begin();
 	lcd.init();
 	lcd.backlight();
+	digitalWrite(interruptPin,HIGH);
+	attachInterrupt(0,shutdown,FALLING);
 }
 
 void trex_Sensor_Values()
@@ -183,6 +183,7 @@ void stop()
 
 void check_angle_magnitude()
 {
+	//default values x:207; y:138; z:329
 	int min = 529;
 	int max = 724;
 	int xAng = map(Xaxis, min, max, -90, 90);
@@ -212,6 +213,12 @@ void show_lcd_data()
 	else if(direction==3){
 		lcd.print("Front");
 	}
+	lcd.setCursor(0,1);
+	lcd.print(x);
+	lcd.setCursor(7,1);
+	lcd.print(y);
+	lcd.setCursor(14,1);
+	lcd.print(z);
 }
 
 int sonar_left()
@@ -272,12 +279,8 @@ void where_na_u()
 	}
 }
 
-void loop()
+void d2_na_me()
 {
-	trex_Sensor_Values();
-	show_lcd_data();
-	where_na_u();
-	
 	if((direction==1)&&(sonar_average>=5)&&(sonar_average<=30)){
 		left_turn();
 	}
@@ -299,8 +302,35 @@ void loop()
 	else {
 		stop();
 	}
-	Serial.println(sonar_average);
-	
 }
-	
-	
+
+void shutdown()
+{
+}
+
+void loop()
+{
+	trex_Sensor_Values();
+	if(voltage>6.50){
+		digitalWrite(interruptPin,HIGH);
+		check_angle_magnitude();
+		show_lcd_data();
+		if(Serial.available()>0){
+			xBee_Control();
+		}	
+		else {
+			where_na_u();
+			d2_na_me();
+		}
+	}
+	else {
+		digitalWrite(interruptPin,LOW);
+	}	
+/*
+	Serial.print(x);
+	Serial.print("\t");
+	Serial.print(y);
+	Serial.print("\t");
+	Serial.println(z);
+*/
+}
