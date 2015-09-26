@@ -181,6 +181,22 @@ void stop()
 	Wire.endTransmission();
 }
 
+void shutdown()
+{	
+	char x='t';
+	leftMotorSpeed=0;
+	rightMotorSpeed=0;
+	byte buffer[5];
+	Wire.beginTransmission(I2Caddress);
+	buffer[0]=x;
+	buffer[1]=leftMotorSpeed >> 8;
+	buffer[2]=leftMotorSpeed & 0xFF;
+	buffer[3]=rightMotorSpeed >> 8;
+	buffer[4]=rightMotorSpeed & 0xFF;
+	Wire.write(buffer,5);
+	Wire.endTransmission();
+}
+
 void check_angle_magnitude()
 {
 	//default values x:207; y:138; z:329
@@ -304,10 +320,6 @@ void d2_na_me()
 	}
 }
 
-void shutdown()
-{
-}
-
 void loop()
 {
 	trex_Sensor_Values();
@@ -325,6 +337,9 @@ void loop()
 	}
 	else {
 		digitalWrite(interruptPin,LOW);
+		Serial.print("Battery Low:");
+		Serial.print("\t");
+		Serial.println(voltage);
 	}	
 /*
 	Serial.print(x);
