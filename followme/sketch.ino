@@ -11,6 +11,7 @@
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 #define interruptPin 2
+volatile boolean lowbat = false;
 
 byte I2Caddress = 0x07;
 byte dataAvailable;
@@ -47,7 +48,7 @@ void setup()
 	lcd.init();
 	lcd.backlight();
 	digitalWrite(interruptPin,HIGH);
-	attachInterrupt(0,shutdown,FALLING);
+	attachInterrupt(0,killbot,FALLING);
 }
 
 void trex_Sensor_Values()
@@ -320,27 +321,38 @@ void d2_na_me()
 	}
 }
 
+void killbot()
+{
+	lowbat = !lowbat;
+}
+
 void loop()
 {
 	trex_Sensor_Values();
-	if(voltage>6.50){
-		digitalWrite(interruptPin,HIGH);
-		check_angle_magnitude();
-		show_lcd_data();
-		if(Serial.available()>0){
-			xBee_Control();
+	while(lowbat==false){
+		if(voltage>6.50){
+			digitalWrite(interruptPin,HIGH);
+			check_angle_magnitude();
+			show_lcd_data();
+			if(Serial.available()>0){
+				xBee_Control();
+			}		
+			else {
+				where_na_u();
+				d2_na_me();
+			}
+			Serial.print("Battery Good:");
+                        Serial.print("\t");
+                        Serial.println(voltage);
 		}	
 		else {
-			where_na_u();
-			d2_na_me();
+			digitalWrite(interruptPin,LOW);
+			Serial.print("Battery Low:");
+			Serial.print("\t");
+			Serial.println(voltage);
 		}
 	}
-	else {
-		digitalWrite(interruptPin,LOW);
-		Serial.print("Battery Low:");
-		Serial.print("\t");
-		Serial.println(voltage);
-	}	
+	shutdown();	
 /*
 	Serial.print(x);
 	Serial.print("\t");
