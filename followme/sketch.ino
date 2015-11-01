@@ -1,7 +1,8 @@
 //Follow me script
 //Clean up
 //Added speed control
-//Last edited: Sep 4 2015
+//Last edited: Oct 31 2015
+//Calibrated d2_na_me() - Oct 31, 2015
 
 
 #include <Wire.h>
@@ -222,10 +223,10 @@ void show_lcd_data()
 	lcd.print("Dir:");
 	lcd.setCursor(15,0);
 	if(direction==1){
-		lcd.print("Left");
+		lcd.print("Right");
 	}
 	else if(direction==2){
-		lcd.print("Right");
+		lcd.print("Left");
 	}
 	else if(direction==3){
 		lcd.print("Front");
@@ -242,7 +243,7 @@ int sonar_left()
 {
 	int sonarA[10];
 	for(int i=0;i<9;i++){
-			sonarA[i]=analogRead(A1);
+			sonarA[i]=analogRead(A0);
 			delayMicroseconds(10);
 			sonarA[i]=(sonarA[i]/2)+2;
 			sonar1=sonar1+sonarA[i];
@@ -255,7 +256,7 @@ int sonar_right()
 {
 	int sonarB[10];
 	for(int i=0;i<9;i++){
-			sonarB[i]=analogRead(A0);
+			sonarB[i]=analogRead(A1);
 			delayMicroseconds(10);
 			sonarB[i]=(sonarB[i]/2)+2;
 			sonar2=sonar2+sonarB[i];
@@ -298,17 +299,17 @@ void where_na_u()
 
 void d2_na_me()
 {
-	if((direction==1)&&(sonar_average>=5)&&(sonar_average<=30)){
-		left_turn();
-	}
-	else if((direction==2)&&(sonar_average>=5)&&(sonar_average<=30)){
+	if(direction==1){
 		right_turn();
 	}
-	else if((direction==3)&&(sonar_left()<=15)&&(sonar_left()>=2)||(sonar_right()<=15)&&(sonar_right()>=2)){
+	else if(direction==2){
+		left_turn();
+	}
+	else if((sonar_left()<=15)&&(sonar_left()>=2)||(sonar_right()<=15)&&(sonar_right()>=2)){
 		backward();
 	}
-	else if((direction==3)&&(sonar_left()>=20)&&(sonar_left()<=50)||(sonar_right()>=20)&&(sonar_right()<=50)){
-	// else if((direction==3)&&(sonar_average>20)&&(sonar_average<=50)){
+
+	else if((direction==3)&&(sonar_left()>=20)&&(sonar_left()<=50)||(direction==3)&&(sonar_right()>=20)&&(sonar_right()<=50)){
 		if(sonar_average>=35){
 			forward_speedUp();
 		}
@@ -341,9 +342,14 @@ void loop()
 				where_na_u();
 				d2_na_me();
 			}
+			Serial.print(sonar_left());
+			Serial.print("\t");
+			Serial.println(sonar_right());
+			/*
 			Serial.print("Battery Good:");
                         Serial.print("\t");
                         Serial.println(voltage);
+			*/
 		}	
 		else {
 			digitalWrite(interruptPin,LOW);
