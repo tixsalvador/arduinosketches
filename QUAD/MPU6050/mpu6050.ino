@@ -5,20 +5,22 @@
 //#define MPU6050_raw_data
 #define MPU6050_scaled_data
 
+
 void setup()
 {
 	Serial.begin(9600);
 	Wire.begin();
-	Wire.beginTransmission(0x68);
-	Wire.write(0x6B);
-	Wire.write(0);
-	Wire.endTransmission(true);
+	mpu6050.begin();
+	mpu6050.setGains(0,1);
+	mpu6050.dlpfConfig(0);
+	mpu6050.offsetCalibration();
+	mpu6050.dlpfConfig(6);
 }
 
 void loop()
 {
-	MPU6050_read_data();
-	
+	mpu6050.readData();
+
 	#ifdef MPU6050_raw_data
 		MPU6050_read_raw_data();
 	#endif
