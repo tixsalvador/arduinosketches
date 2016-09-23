@@ -52,7 +52,7 @@ void setup()
         pixy.init();
 }
 
-void loop()
+void track_object()
 {
     static int i=0;
     uint16_t blocks;
@@ -72,10 +72,24 @@ void loop()
 
         i++;
 
-        if(i%1000==0){
+        if(i%50==0){
                 Serial.print(panLoop.m_pos);
                 Serial.print("\t");
                 Serial.println(tiltLoop.m_pos);
         }
     }
+}
+
+void loop()
+{
+        track_object();
+
+        int pwPin=7;
+        long pwPulse,pwDistance;
+        pinMode(pwPin,INPUT);
+
+        pwPulse=pulseIn(pwPin,HIGH);
+        pwDistance=pwPulse/147;
+        delay(500);
+        Serial.println(pwDistance);
 }
