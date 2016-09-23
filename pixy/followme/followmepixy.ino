@@ -82,14 +82,19 @@ void track_object()
 
 void loop()
 {
-        track_object();
+        //track_object();
 
         int pwPin=7;
-        long pwPulse,pwDistance;
-        pinMode(pwPin,INPUT);
+        int pwPulse[10];
+        uint8_t  pulse=0;
 
-        pwPulse=pulseIn(pwPin,HIGH);
-        pwDistance=pwPulse/147;
-        delay(500);
-        Serial.println(pwDistance);
+        pinMode(pwPin,INPUT);
+        for(int i=0;i<9;i++){
+                pwPulse[i]=pulseIn(pwPin,HIGH);
+                pwPulse[i]=pwPulse[i]/147;
+                pulse += pwPulse[i];
+                delay(10);
+        }
+        pulse=pulse/10;
+        Serial.println(pulse);
 }
