@@ -46,6 +46,31 @@ void ServoLoop::update(int32_t error)
         m_prevError = error;
 }
 
+class maxSonar
+{
+public:
+	void readSonar(const int pwPin);
+	uint8_t pwDistance;
+	
+};
+
+maxSonar leftSonar,rightSonar;
+
+void maxSonar::readSonar(const int pwPin)
+{
+	int pwPulse[5];
+	int pulse=0;
+		
+	pinMode(pwPin,INPUT);
+	for(int i=0;i<5;i++){
+		pwPulse[i]=pulseIn(pwPin,HIGH);
+		pwPulse[i]=pwPulse[i]/147;
+		pulse+=pwPulse[i];
+		delay(10);
+	}
+	pwDistance=pulse/5;
+}
+
 void setup()
 {
         Serial.begin(9600);
@@ -83,20 +108,10 @@ void track_object()
 void loop()
 {
         //track_object();
-
-        int pwPin=6;
-        int pwPulse[5];
-	int pulse=0;
-	uint8_t pwDistance;
-
-        pinMode(pwPin,INPUT);
-	for(int i=0;i<5;i++){
-        	pwPulse[i]=pulseIn(pwPin,HIGH);
-        	pwPulse[i]=pwPulse[i]/147;
-		pulse+=pwPulse[i];
-        	delay(10);
-	}
-	pwDistance=pulse/5;
-	Serial.println(pwDistance);
+	leftSonar.readSonar(6);
+	rightSonar.readSonar(7);
+	Serial.print(leftSonar.pwDistance);
+	Serial.print("\t");
+	Serial.println(rightSonar.pwDistance);
 }
 
