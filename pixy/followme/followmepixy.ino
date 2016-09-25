@@ -94,24 +94,25 @@ void track_object()
         tiltLoop.update(tiltError);
 
         pixy.setServos(panLoop.m_pos,tiltLoop.m_pos);
-
+	
         i++;
 
         if(i%50==0){
-                Serial.print(panLoop.m_pos);
-                Serial.print("\t");
-                Serial.println(tiltLoop.m_pos);
+		Serial.print(panLoop.m_pos);
+        	Serial.print("\t");
+        	Serial.print(tiltLoop.m_pos);
+        	Serial.print("\t");
+        	Serial.print(leftSonar.pwDistance);
+        	Serial.print("\t");
+        	Serial.println(rightSonar.pwDistance);
         }
     }
 }
 
 void loop()
 {
-        //track_object();
-	leftSonar.readSonar(6);
-	rightSonar.readSonar(7);
-	Serial.print(leftSonar.pwDistance);
-	Serial.print("\t");
-	Serial.println(rightSonar.pwDistance);
+        track_object();
+	leftSonar.readSonar(7);
+        rightSonar.readSonar(6);
 }
 
