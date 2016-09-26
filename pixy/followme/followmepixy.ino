@@ -19,8 +19,8 @@ public:
         int32_t m_dgain;
 };
 
-ServoLoop panLoop(300,500);
-ServoLoop tiltLoop(500,700);
+ServoLoop panLoop(500,700);
+ServoLoop tiltLoop(700,900);
 
 ServoLoop::ServoLoop(int32_t pgain, int32_t dgain)
 {
@@ -59,9 +59,8 @@ maxSonar leftSonar,rightSonar;
 void maxSonar::readSonar(const int pwPin)
 {
 	int pulse;
-	pinMode(pwPin,INPUT);
-	pulse=pulseIn(pwPin,HIGH);
-	pwDistance=pulse/147;
+	pulse=analogRead(pwPin);
+	pwDistance=(pulse/2)+2;
 		
 }
 
@@ -90,9 +89,6 @@ void track_object()
         pixy.setServos(panLoop.m_pos,tiltLoop.m_pos);
 
 /*
-	leftSonar.readSonar(7);
-	rightSonar.readSonar(6);
-	
         i++;
 
         if(i%50==0){
@@ -110,5 +106,10 @@ void track_object()
 void loop()
 {
         track_object();
+	leftSonar.readSonar(A2);
+	rightSonar.readSonar(A1);
+	Serial.print(leftSonar.pwDistance);
+	Serial.print("\t");
+	Serial.println(rightSonar.pwDistance);
 }
 
