@@ -58,17 +58,11 @@ maxSonar leftSonar,rightSonar;
 
 void maxSonar::readSonar(const int pwPin)
 {
-	int pwPulse[5];
-	int pulse=0;
-		
+	int pulse;
 	pinMode(pwPin,INPUT);
-	for(int i=0;i<5;i++){
-		pwPulse[i]=pulseIn(pwPin,HIGH);
-		pwPulse[i]=pwPulse[i]/147;
-		pulse+=pwPulse[i];
-		delay(10);
-	}
-	pwDistance=pulse/5;
+	pulse=pulseIn(pwPin,HIGH);
+	pwDistance=pulse/147;
+		
 }
 
 void setup()
@@ -79,7 +73,7 @@ void setup()
 
 void track_object()
 {
-    static int i=0;
+//    static int i=0;
     uint16_t blocks;
     int32_t panError, tiltError;
 
@@ -94,25 +88,27 @@ void track_object()
         tiltLoop.update(tiltError);
 
         pixy.setServos(panLoop.m_pos,tiltLoop.m_pos);
+
+/*
+	leftSonar.readSonar(7);
+	rightSonar.readSonar(6);
 	
         i++;
 
         if(i%50==0){
 		Serial.print(panLoop.m_pos);
-        	Serial.print("\t");
-        	Serial.print(tiltLoop.m_pos);
-        	Serial.print("\t");
-        	Serial.print(leftSonar.pwDistance);
-        	Serial.print("\t");
-        	Serial.println(rightSonar.pwDistance);
-        }
+                Serial.print("\t");
+                Serial.print(tiltLoop.m_pos);
+                Serial.print("\t");
+                Serial.print(leftSonar.pwDistance);
+                Serial.print("\t");
+                Serial.println(rightSonar.pwDistance);		
+       } */
     }
 }
 
 void loop()
 {
         track_object();
-	leftSonar.readSonar(7);
-        rightSonar.readSonar(6);
 }
 
