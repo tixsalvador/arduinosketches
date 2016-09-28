@@ -1,3 +1,7 @@
+//DAISY CHAINED Max Sonar
+//Added maxSonar class
+
+
 #include <SPI.h>
 #include <Pixy.h>
 
@@ -49,19 +53,22 @@ void ServoLoop::update(int32_t error)
 class maxSonar
 {
 public:
-	void readSonar(const int pwPin);
-	uint8_t pwDistance;
-	
+        void readSonar(const int pwPin);
+        uint16_t pwDistance;
 };
 
 maxSonar leftSonar,rightSonar;
 
 void maxSonar::readSonar(const int pwPin)
 {
-	int pulse;
-	pulse=analogRead(pwPin);
-	pwDistance=(pulse/2)+2;
-		
+        const int serialSonarPin=7;
+        pinMode(serialSonarPin,OUTPUT);
+        digitalWrite(serialSonarPin,HIGH);
+//      delayMicroseconds(20);
+        digitalWrite(serialSonarPin,LOW);
+        pinMode(serialSonarPin,INPUT);
+//      delay(100);
+        pwDistance=analogRead(pwPin)/2;
 }
 
 void setup()
@@ -72,7 +79,6 @@ void setup()
 
 void track_object()
 {
-//    static int i=0;
     uint16_t blocks;
     int32_t panError, tiltError;
 
@@ -87,29 +93,15 @@ void track_object()
         tiltLoop.update(tiltError);
 
         pixy.setServos(panLoop.m_pos,tiltLoop.m_pos);
-
-/*
-        i++;
-
-        if(i%50==0){
-		Serial.print(panLoop.m_pos);
-                Serial.print("\t");
-                Serial.print(tiltLoop.m_pos);
-                Serial.print("\t");
-                Serial.print(leftSonar.pwDistance);
-                Serial.print("\t");
-                Serial.println(rightSonar.pwDistance);		
-       } */
     }
 }
 
 void loop()
 {
-        track_object();
-	leftSonar.readSonar(A2);
-	rightSonar.readSonar(A1);
-	Serial.print(leftSonar.pwDistance);
-	Serial.print("\t");
-	Serial.println(rightSonar.pwDistance);
+	track_object();
+        leftSonar.readSonar(A1);
+        rightSonar.readSonar(A2);
+        Serial.print(leftSonar.pwDistance);
+        Serial.print("\t");
+        Serial.println(rightSonar.pwDistance);
 }
-
