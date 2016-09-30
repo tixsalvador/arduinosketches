@@ -1,3 +1,4 @@
+//Replace delay with millis() and micros()
 //DAISY CHAINED Max Sonar
 //Added maxSonar class
 
@@ -9,6 +10,10 @@
 #define Y_CENTER        ((PIXY_MAX_Y-PIXY_MIN_Y)/2)
 
 Pixy pixy;
+
+unsigned long currentTimeMillis,currentTimeMicro;
+unsigned long previousTime1=0;
+unsigned long previousTime2=0;
 
 class ServoLoop
 {
@@ -62,13 +67,19 @@ maxSonar leftSonar,rightSonar;
 void maxSonar::readSonar(const int pwPin)
 {
         const int serialSonarPin=7;
+        long interval1=20;
+        long interval2=100;
         pinMode(serialSonarPin,OUTPUT);
         digitalWrite(serialSonarPin,HIGH);
-//      delayMicroseconds(20);
-        digitalWrite(serialSonarPin,LOW);
+        if(((currentTimeMicro=micros())-previousTime1)>=interval1){
+                digitalWrite(serialSonarPin,LOW);
+                previousTime1=micros();
+        }
         pinMode(serialSonarPin,INPUT);
-//      delay(100);
-        pwDistance=analogRead(pwPin)/2;
+        if(((currentTimeMillis=millis())-previousTime2)>=interval2){
+                pwDistance=analogRead(pwPin)/2;
+                previousTime2=millis();
+        }
 }
 
 void setup()
@@ -98,7 +109,7 @@ void track_object()
 
 void loop()
 {
-	track_object();
+        track_object();
         leftSonar.readSonar(A1);
         rightSonar.readSonar(A2);
         Serial.print(leftSonar.pwDistance);
