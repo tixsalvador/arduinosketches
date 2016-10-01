@@ -11,9 +11,6 @@
 
 Pixy pixy;
 
-unsigned long currentTimeMillis,currentTimeMicro;
-unsigned long previousTime1=0;
-unsigned long previousTime2=0;
 
 class ServoLoop
 {
@@ -58,27 +55,31 @@ void ServoLoop::update(int32_t error)
 class maxSonar
 {
 public:
+	maxSonar();
         void readSonar(const int pwPin);
         uint16_t pwDistance;
+	unsigned long currentTime;
+	unsigned long previousTime;
 };
 
 maxSonar leftSonar,rightSonar;
+	
+maxSonar::maxSonar()
+{
+	unsigned long previousTime=0;
+}
 
 void maxSonar::readSonar(const int pwPin)
 {
         const int serialSonarPin=7;
-        long interval1=20;
-        long interval2=100;
+        long interval=100;
         pinMode(serialSonarPin,OUTPUT);
         digitalWrite(serialSonarPin,HIGH);
-        if(((currentTimeMicro=micros())-previousTime1)>=interval1){
-                digitalWrite(serialSonarPin,LOW);
-                previousTime1=micros();
-        }
+        digitalWrite(serialSonarPin,LOW);
         pinMode(serialSonarPin,INPUT);
-        if(((currentTimeMillis=millis())-previousTime2)>=interval2){
+        if(((currentTime=millis())-previousTime)>=interval){
                 pwDistance=analogRead(pwPin)/2;
-                previousTime2=millis();
+                previousTime=millis();
         }
 }
 
