@@ -25,8 +25,8 @@ public:
         int32_t m_dgain;
 };
 
-ServoLoop panLoop(500,700);
-ServoLoop tiltLoop(700,900);
+ServoLoop panLoop(450,650);
+ServoLoop tiltLoop(650,850);
 
 ServoLoop::ServoLoop(int32_t pgain, int32_t dgain)
 {
@@ -111,8 +111,8 @@ void track_object()
 void loop()
 {
         track_object();
-        leftSonar.readSonar(A1);
-        rightSonar.readSonar(A2);
+        leftSonar.readSonar(A2);
+        rightSonar.readSonar(A1);
         Serial.print(leftSonar.pwDistance);
         Serial.print("\t");
         Serial.println(rightSonar.pwDistance);
