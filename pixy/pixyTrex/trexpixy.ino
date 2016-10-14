@@ -64,6 +64,6 @@ void loop()
 {
         delay(100);
         getSpeed();
-        forward(100,100);
+        forward(MotorSpeed,MotorSpeed);
         Serial.println(MotorSpeed);
 }
