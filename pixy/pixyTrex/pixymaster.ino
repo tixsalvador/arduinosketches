@@ -1,3 +1,5 @@
+//Added proportional algorithm in motorspeed value
+//Added troubleshoot
 //Added Wire library
 //Replace delay with millis() and micros()
 //DAISY CHAINED Max Sonar
@@ -15,8 +17,21 @@
 Pixy pixy;
 
 byte I2Caddr;
-int MotorSpeed; //testing of wire send using potentiometer
 
+int MotorSpeed; 
+
+// Tesing integers
+int potentiometer;
+
+//PID calculation
+int leftSonarError;
+int sonarDesiredPosition=15;
+int proportional;
+long accumulator;
+int integral;
+
+//For troubleshooting delay()
+uint32_t pastTime=0; 
 
 class ServoLoop
 {
@@ -138,13 +153,49 @@ void sendMotorSpeed()
 
 void loop()
 {
-        MotorSpeed=analogRead(A0);
-        track_object();
+//        track_object();
         leftSonar.readSonar(A2);
         rightSonar.readSonar(A1);
-/*
-        Serial.print(leftSonar.pwDistance);
-        Serial.print("\t");
-        Serial.println(rightSonar.pwDistance);
-*/
+	
+	const int sonarPgain=200;
+	const int sonarIgain=100;
+	
+
+//	leftSonarError=sonarDesiredPosition-leftSonar.pwDistance;
+		
+	
+        potentiometer=analogRead(A0);
+	potentiometer=map(potentiometer,0,1024,0,50);
+	potentiometer=constrain(potentiometer,0,50);
+
+	leftSonarError=sonarDesiredPosition-potentiometer;
+
+	proportional=leftSonarError*sonarPgain;	
+	accumulator+=leftSonarError;	
+	integral=accumulator*sonarIgain;
+ 	MotorSpeed=(proportional+integral)>>5;	
+
+	troubleShoot();
+}	
+
+void troubleShoot()
+{
+	uint32_t currentTime;
+	const int interval=500;
+	if((currentTime=millis()-pastTime)>=interval){
+	//	Serial.print(leftSonar.pwDistance);
+		Serial.print(potentiometer);
+		Serial.print("\t");
+	//	Serial.print(leftSonarError);
+	//	Serial.print("\t");
+		Serial.print(proportional);
+		Serial.print("\t");
+		Serial.print(integral);
+		Serial.print("\t");
+		Serial.println(MotorSpeed);	
+	//      Serial.print(leftSonar.pwDistance);
+	//      Serial.print("\t");
+	//      Serial.println(rightSonar.pwDistance);
+		pastTime=millis();
+	}
 }
